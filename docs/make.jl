@@ -11,11 +11,7 @@ makedocs(;
         canonical="https://sethaxen.github.io/ExponentialAction.jl",
         assets=String[],
     ),
-    pages=[
-        "Home" => "index.md",
-    ],
+    pages=["Home" => "index.md"],
 )
 
-deploydocs(;
-    repo="github.com/sethaxen/ExponentialAction.jl",
-)
+deploydocs(; repo="github.com/sethaxen/ExponentialAction.jl")
