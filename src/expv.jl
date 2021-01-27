@@ -6,17 +6,18 @@ This is significantly faster than the matrix exponential when the second dimensi
 much smaller than the first one. The "time" `t` may be real or complex.
 The algorithm is described in [^AlMohyHigham2011].
 
-[^AlMohyHigham2011]: Al-Mohy, Awad H. and Higham, Nicholas J. (2011) Computing the Action of the Matrix
-    Exponential, with an Application to Exponential Integrators. SIAM Journal on Scientific
-    Computing, 33 (2). pp. 488-511. ISSN 1064-8275
-    doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
-    eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
 # Keywords
 
   - `shift=true`: Expand the Taylor series of `exp(t*A)` about ``A-μI=0`` instead of
     ``A=0``, where ``μ = \\operatorname{tr}(A) / n`` to speed up convergence. See
     §3.1 of [^AlMohyHigham2011].
   - `tol`: The tolerance at which to compute the result.
+
+[^AlMohyHigham2011]: Al-Mohy, Awad H. and Higham, Nicholas J. (2011) Computing the Action of the Matrix
+    Exponential, with an Application to Exponential Integrators. SIAM Journal on Scientific
+    Computing, 33 (2). pp. 488-511. ISSN 1064-8275
+    doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
+    eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
 """
 function expv(t, A, B; shift=true, tol=eps(float(real(Base.promote_eltype(t, A, B)))))
     n = LinearAlgebra.checksquare(A)
