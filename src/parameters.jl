@@ -16,7 +16,7 @@ function parameters(
     T = float(real(Base.promote_eltype(t, A)))
     θ = coefficients(T(tol))
     ℓ = 2 # §3: “where the positive integer ℓ is a parameter (typically set to 1 or 2)”
-    if tAnorm * n0 * m_max ≤ 2 * ℓ * θ[m_max] * p_max * (p_max + 3) # (3.13) is satisfied
+    if tAnorm * (n0 * m_max) ≤ θ[m_max] * (2 * ℓ * p_max * (p_max + 3)) # (3.13) is satisfied
         m_opt = 0
         Cm_opt = T(Inf)
         # work around argmin not taking a function
