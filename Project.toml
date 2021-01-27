@@ -3,6 +3,9 @@ uuid = "e24c0720-ea99-47e8-929e-571b494574d3"
 authors = ["Seth Axen <seth.axen@gmail.com> and contributors"]
 version = "0.1.0"
 
+[deps]
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
 [compat]
 julia = "1"
 
