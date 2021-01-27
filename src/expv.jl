@@ -11,7 +11,8 @@ The algorithm is described in [^AlMohyHigham2011].
   - `shift=true`: Expand the Taylor series of `exp(t*A)` about ``A-μI=0`` instead of
     ``A=0``, where ``μ = \\operatorname{tr}(A) / n`` to speed up convergence. See
     §3.1 of [^AlMohyHigham2011].
-  - `tol`: The tolerance at which to compute the result.
+  - `tol`: The tolerance at which to compute the result. Defaults to the tolerance of the
+    eltype of the result.
 
 [^AlMohyHigham2011]: Al-Mohy, Awad H. and Higham, Nicholas J. (2011) Computing the Action of the Matrix
     Exponential, with an Application to Exponential Integrators. SIAM Journal on Scientific
