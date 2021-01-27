@@ -32,9 +32,13 @@ function parameters(
         d = tnorm * sqrt(opnormestpow1(A, 2))
         m_opt = m_max + 1
         Cm_opt = T(Inf)
+        A *= A
         for p in 2:p_max # Compute minimum in (3.11)
+            A *= A
+            # TODO: replace powers of A with opnormest(pow, A, 1)
+            # see https://github.com/JuliaLang/julia/pull/39058
             # (3.7)
-            d, d_old = tnorm * opnormestpow1(A, p + 1)^(1//(p + 1)), d
+            d, d_old = tnorm * opnormest1(A)^(1//(p + 1)), d
             α = max(d, d_old)
             m_min = p * (p - 1) - 1
             # work around argmin not taking a function
