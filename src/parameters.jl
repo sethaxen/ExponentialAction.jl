@@ -21,13 +21,13 @@ function parameters(
         Cm_opt = T(Inf)
         # work around argmin not taking a function
         for m in 1:m_max
-            Cm = m * cld(tAnorm, θ[m])
+            Cm = m * ceil(Int, tAnorm / θ[m])
             if Cm < Cm_opt
                 m_opt = m
                 Cm_opt = Cm
             end
         end
-        s = Int(cld(Cm_opt, m_opt))
+        s = ceil(Int, Cm_opt / m_opt)
     else
         # TODO: replace powers of A here and below with opnormest(pow, A, 1)
         # see https://github.com/JuliaLang/julia/pull/39058
@@ -43,14 +43,14 @@ function parameters(
             m_min = p * (p - 1) - 1
             # work around argmin not taking a function
             for m in m_min:m_max
-                Cm = m * cld(α, θ[m])
+                Cm = m * ceil(Int, α / θ[m])
                 if Cm < Cm_opt || (Cm == Cm_opt && m < m_opt)
                     m_opt = m
                     Cm_opt = Cm
                 end
             end
         end
-        s = max(Int(cld(Cm_opt, m_opt)), 1)
+        s = max(ceil(Int, Cm_opt / m_opt), 1)
     end
     return (m=m_opt, s=s)
 end
