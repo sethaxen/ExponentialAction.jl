@@ -5,11 +5,17 @@
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 [![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
 
-ExponentialAction is a lightweight, zero-dependency package that implements the action of the [Matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential) using the algorithm of Al-Mohy and Higham<sup>[1](#references)</sup>.
+ExponentialAction is a lightweight package that implements the action of the [Matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential) using the algorithm of Al-Mohy and Higham<sup>[1](#references)</sup>.
 
 The API of this package is a single function `expv(t, A, B)` that computes `exp(t * A) * B` for a scalar `t`, matrix `A`, and matrix or vector `B`, without computing `exp(t * A)`.
 For large matrices `A`, this is significantly less expensive than calling `exp(t * A) * B` directly.
-For more information, see the docstring of `expv`.
+
+While `exp(X)` is only defined in LinearAlgebra for `Diagonal`, `Symmetric{<:Real}`/`Hermitian`, and `StridedMatrix`, `expv` can take an arbitrary matrix type.
+It also can be differentiated using ForwardDiff, ReverseDiff, and Zygote.
+Note that currently this just means we avoid patterns such as type constraints or mutation that are problematic for these automatic differentiation engines; no custom rules are defined.
+This may change in the future.
+
+For description of keyword arguments, see the docstring of `expv`.
 
 ## Related Packages
 
