@@ -13,15 +13,16 @@ Tdouble = (Float64, ComplexF64)
         TA in Tset,
         TB in Tset,
         tscale in Tt.((0.1, 1, 10)),
+        shift in (true, false)
 
         t = tscale * randn(Tt)
         A = MT(randn(TA, n, n))
         B = randn(TB, n, Bdims2...)
         T = Base.promote_eltype(t, A, B)
         rT = real(T)
-        @inferred expv(t, A, B)
-        @test expv(t, A, B) ≈ exp(t * A) * B
-        @test expv(t, A, B) ≈ exp(t * A) * B
-        @test eltype(expv(t, A, B)) === T
+        @inferred expv(t, A, B; shift=shift)
+        @test expv(t, A, B; shift=shift) ≈ exp(t * A) * B
+        @test expv(t, A, B; shift=shift) ≈ exp(t * A) * B
+        @test eltype(expv(t, A, B; shift=shift)) === T
     end
 end
