@@ -7,7 +7,7 @@
 
 ExponentialAction is a lightweight, zero-dependency package that implements the action of the [Matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential) using the algorithm of Al-Mohy and Higham<sup>[1](#references)</sup>.
 
-The API of this package is a single function `expv(t, A, B)` that computes `exp(t * A) * B` for a scalar `t`, matrix `A`, and matrix of vector `B`, without computing `exp(t * A)`.
+The API of this package is a single function `expv(t, A, B)` that computes `exp(t * A) * B` for a scalar `t`, matrix `A`, and matrix or vector `B`, without computing `exp(t * A)`.
 For large matrices `A`, this is significantly less expensive than calling `exp(t * A) * B` directly.
 For more information, see the docstring of `expv`.
 
