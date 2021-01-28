@@ -25,4 +25,13 @@ Tdouble = (Float64, ComplexF64)
         @test expv(t, A, B; shift=shift) ≈ exp(t * A) * B
         @test eltype(expv(t, A, B; shift=shift)) === T
     end
+
+    @testset "errors if tolerance too low" begin
+        t = randn()
+        A = randn(10, 10)
+        B = randn(10, 10)
+
+        @test_throws DomainError expv(t, A, B; tol=eps(Float64) / 100)
+        @test_throws DomainError expv(big(t), big.(A), big.(B))
+    end
 end

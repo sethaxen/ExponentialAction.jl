@@ -170,9 +170,7 @@ function coefficients(tol::T) where {T<:Real}
             22.128357353464594,
         ]
     else
-        throw(
-            "Only tolerance greater than or equal to 2^(-53) is supported. Requested: $tol"
-        )
+        throw(DomainError(tol, "Tolerance less than 2^(-53) is unsupported."))
     end
     return θ
 end
