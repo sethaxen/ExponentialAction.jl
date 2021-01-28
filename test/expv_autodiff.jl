@@ -9,7 +9,9 @@ using Zygote
         t = rand()
         A = randn(10, 10)
         B = randn(10)
-        tjac_fd, Ajac_fd, Bjac_fd = FiniteDifferences.jacobian(central_fdm(5, 1), expv, t, A, B)
+        tjac_fd, Ajac_fd, Bjac_fd = FiniteDifferences.jacobian(
+            central_fdm(5, 1), expv, t, A, B
+        )
         tjac_ad = ForwardDiff.derivative(t -> expv(t, A, B), t)
         @test tjac_ad ≈ tjac_fd
         Ajac_ad = ForwardDiff.jacobian(A -> expv(t, A, B), A)
@@ -22,7 +24,9 @@ using Zygote
         t = rand()
         A = randn(10, 10)
         B = randn(10)
-        tjac_fd, Ajac_fd, Bjac_fd = FiniteDifferences.jacobian(central_fdm(5, 1), expv, t, A, B)
+        tjac_fd, Ajac_fd, Bjac_fd = FiniteDifferences.jacobian(
+            central_fdm(5, 1), expv, t, A, B
+        )
         tjac_ad = vec(ReverseDiff.jacobian(t -> expv(first(t), A, B), [t]))
         @test tjac_ad ≈ tjac_fd
         Ajac_ad = ReverseDiff.jacobian(A -> expv(t, A, B), A)
