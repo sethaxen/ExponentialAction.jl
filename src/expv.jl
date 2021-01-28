@@ -33,8 +33,8 @@ function expv(t, A, B; shift=true, tol=eps(float(real(Base.promote_eltype(t, A, 
         μ = zero(float(eltype(A)))
     end
     params = parameters(t, A, n0, m_max, p_max, tol)
-    F = B
     η = exp(t * μ / params.s)
+    F = one(η) * B
     for i in 1:(params.s)
         c1 = _opnormInf(B)
         for j in 1:(params.m)
