@@ -9,9 +9,9 @@ function parameters(
     t, A, n0, m_max, p_max=p_from_m(m_max), tol=eps(float(real(Base.promote_eltype(t, A))))
 )
     tnorm = abs(t)
-    iszero(tnorm) && return (0, 1)
+    iszero(tnorm) && return (m=0, s=1)
     Anorm = opnormest1(A)
-    iszero(Anorm) && return (0, 1)
+    iszero(Anorm) && return (m=0, s=1)
     tAnorm = tnorm * Anorm
     T = float(real(Base.promote_eltype(t, A)))
     θ = coefficients(T(tol))
