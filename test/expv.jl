@@ -5,7 +5,7 @@ Tdouble = (Float64, ComplexF64)
 
 @testset "expv" begin
     n = 10
-    @testset "expv(t::$Tt, A::$MT{$TA}, B::Array{$TB,$(length(Bdims2)+1)}), tscale=$tscale" for
+    @testset "expv(t::$Tt, A::$MT{$TA}, B::Array{$TB,$(length(Bdims2)+1)}), tscale=$tscale, shift=$shift" for
         MT in (Matrix, Diagonal),
         Tset in (Tsingle, Tdouble),
         Bdims2 in ((), (4,)),
