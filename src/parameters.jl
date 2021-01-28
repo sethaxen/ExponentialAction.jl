@@ -55,5 +55,7 @@ function parameters(
     return (m=m_opt, s=s)
 end
 
+ChainRulesCore.@non_differentiable parameters(t, A, n0, m_max, p_max, tol)
+
 # solution to p(p-1) ≤ m + 1
 p_from_m(m) = oftype(m, fld(1 + sqrt(5 + 4 * m), 2))

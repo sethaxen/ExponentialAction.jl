@@ -1,6 +1,7 @@
 module ExponentialAction
 
 using LinearAlgebra
+using ChainRulesCore: ChainRulesCore
 
 include("util.jl")
 include("coefficients.jl")
