@@ -55,6 +55,7 @@ function parameters(
     return (m=m_opt, s=s)
 end
 
+# avoid differentiating through parameters with ChainRules-compatible ADs
 ChainRulesCore.@non_differentiable parameters(t, A, n0, m_max, p_max, tol)
 
 # solution to p(p-1) ≤ m + 1
