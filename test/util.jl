@@ -1,4 +1,4 @@
-using ExponentialAction, LinearAlgebra
+using ExponentialAction, LinearAlgebra, Test
 
 @testset "Utilities" begin
     @testset "_opnormInf" begin
