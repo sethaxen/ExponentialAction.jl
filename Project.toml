@@ -16,7 +16,8 @@ FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 ReverseDiff = "37e2e3b7-166d-5795-8a7a-e32c996b4267"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
-test = ["FiniteDifferences", "ForwardDiff", "ReverseDiff", "Test", "Zygote"]
+test = ["FiniteDifferences", "ForwardDiff", "ReverseDiff", "SparseArrays", "Test", "Zygote"]
