@@ -54,6 +54,18 @@ function parameters(
     end
     return (m=m_opt, s=s)
 end
+# work around opnorm(A, 1) and (A^2)*A having very slow defaults for these arrays
+# https://github.com/sethaxen/ExponentialAction.jl/issues/3
+function parameters(
+    t,
+    A::Union{Bidiagonal,Tridiagonal},
+    n0,
+    m_max,
+    p_max=p_from_m(m_max),
+    tol=eps(float(real(Base.promote_eltype(t, A)))),
+)
+    return parameters(t, sparse(A), n0, m_max, p_max, tol)
+end
 
 # avoid differentiating through parameters with ChainRules-compatible ADs
 ChainRulesCore.@non_differentiable parameters(t, A, n0, m_max, p_max, tol)

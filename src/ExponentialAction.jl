@@ -2,6 +2,7 @@ module ExponentialAction
 
 using LinearAlgebra
 using ChainRulesCore: ChainRulesCore
+using SparseArrays: sparse
 
 include("util.jl")
 include("coefficients.jl")
