@@ -14,7 +14,7 @@ using ExponentialAction, ChainRulesCore, LinearAlgebra, Test
         A = randn(ComplexF64, 10)
         n, back = ChainRulesCore.rrule(ExponentialAction._opnormInf, A)
         @test n == ExponentialAction._opnormInf(A)
-        @test @inferred(back(1.0)) === (NO_FIELDS, DoesNotExist())
+        @test @inferred(back(1.0)) === (DoesNotExist(), DoesNotExist())
         A = randn(ComplexF64, 10, 10)
         n, back = ChainRulesCore.rrule(ExponentialAction._opnormInf, A)
         @test n == ExponentialAction._opnormInf(A)
