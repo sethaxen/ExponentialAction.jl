@@ -18,7 +18,7 @@ function parameters(
     ℓ = 2 # §3: “where the positive integer ℓ is a parameter (typically set to 1 or 2)”
     if tAnorm * (n0 * m_max) ≤ θ[m_max] * (2 * ℓ * p_max * (p_max + 3)) # (3.13) is satisfied
         m_opt = 0
-        Cm_opt = T(Inf)
+        Cm_opt = typemax(Int)
         # work around argmin not taking a function
         for m in 1:m_max
             Cm = m * _cld(tAnorm, θ[m])
@@ -34,7 +34,7 @@ function parameters(
         Apow = A * A
         d = tnorm * sqrt(opnormest1(A))
         m_opt = m_max + 1
-        Cm_opt = T(Inf)
+        Cm_opt = typemax(Int)
         for p in 2:p_max # Compute minimum in (3.11)
             Apow *= A
             # (3.7)
