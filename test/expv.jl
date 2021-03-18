@@ -13,7 +13,7 @@ Tdouble = (Float64, ComplexF64)
         Tt in Tset,
         TA in Tset,
         TB in Tset,
-        tscale in Tt.((0.1, 1, 10)),
+        tscale in Tt.((0.1, 1, 2)),
         shift in (true, false)
 
         t = tscale * randn(Tt)
@@ -36,7 +36,7 @@ Tdouble = (Float64, ComplexF64)
         Tt in Tset,
         TA in Tset,
         TB in Tset,
-        tscale in Tt.((0.1, 1, 10)),
+        tscale in Tt.((0.1, 1, 2)),
         shift in (true, false)
 
         t = tscale * randn(Tt)
