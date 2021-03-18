@@ -1,5 +1,6 @@
 using ExponentialAction, LinearAlgebra, SparseArrays, Test
 
+Thalf = (Float16, ComplexF16)
 Tsingle = (Float32, ComplexF32)
 Tdouble = (Float64, ComplexF64)
 
@@ -7,7 +8,7 @@ Tdouble = (Float64, ComplexF64)
     n = 10
     @testset "expv(t::$Tt, A::$MT{$TA}, B::Array{$TB,$(length(Bdims2)+1)}), tscale=$tscale, shift=$shift" for
         MT in (Matrix, Diagonal, Bidiagonal, Tridiagonal),
-        Tset in (Tsingle, Tdouble),
+        Tset in (Thalf, Tsingle, Tdouble),
         Bdims2 in ((), (4,)),
         Tt in Tset,
         TA in Tset,
@@ -23,14 +24,14 @@ Tdouble = (Float64, ComplexF64)
         end
         B = randn(TB, n, Bdims2...)
         T = Base.promote_eltype(t, A, B)
-        rT = real(T)
+        Te = Base.promote_type(T, Float32)
         @inferred expv(t, A, B; shift=shift)
-        @test expv(t, A, B; shift=shift) ≈ exp(Matrix(t * A)) * B
+        @test expv(t, A, B; shift=shift) ≈ T.(exp(Matrix{Te}(t * A)) * B)
         @test eltype(expv(t, A, B; shift=shift)) === T
     end
 
     @testset "expv(t::$Tt, A::SparseMatrixCSC{$TA}, B::Array{$TB,$(length(Bdims2)+1)}), tscale=$tscale, shift=$shift" for
-        Tset in (Tsingle, Tdouble),
+        Tset in (Thalf, Tsingle, Tdouble),
         Bdims2 in ((), (4,)),
         Tt in Tset,
         TA in Tset,
@@ -42,9 +43,9 @@ Tdouble = (Float64, ComplexF64)
         A = VERSION ≥ v"1.1" ? sprandn(TA, n, n, 1 / n) : TA.(sprandn(n, n, 1 / n))
         B = randn(TB, n, Bdims2...)
         T = Base.promote_eltype(t, A, B)
-        rT = real(T)
+        Te = Base.promote_type(T, Float32)
         @inferred expv(t, A, B; shift=shift)
-        @test expv(t, A, B; shift=shift) ≈ exp(Matrix(t * A)) * B
+        @test expv(t, A, B; shift=shift) ≈ T.(exp(Matrix{Te}(t * A)) * B)
         @test eltype(expv(t, A, B; shift=shift)) === T
     end
 
