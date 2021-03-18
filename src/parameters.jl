@@ -11,7 +11,7 @@ function parameters(
     θ = coefficients(tol)
     T = float(Base.promote_eltype(t, A, θ))
     Tr = real(T)
-    tnorm = Tr(abs(t))
+    tnorm = abs(t * one(Tr))
     iszero(tnorm) && return (m=0, s=1)
     Anorm = Tr(opnormest1(A))
     iszero(Anorm) && return (m=0, s=1)
