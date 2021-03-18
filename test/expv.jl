@@ -3,7 +3,7 @@ using ExponentialAction, LinearAlgebra, SparseArrays, Test
 Thalf = (Float16, ComplexF16)
 Tsingle = (Float32, ComplexF32)
 Tdouble = (Float64, ComplexF64)
-tscales(::Type{T}) where {T} = (log(maxintfloat(real(T))) / 3) ./ (100, 10, 1)
+tscales(::Type{T}) where {T} = (log(maxintfloat(real(T))) / 4) ./ (100, 10, 1)
 
 @testset "expv" begin
     n = 10
