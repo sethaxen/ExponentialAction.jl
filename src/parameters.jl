@@ -9,12 +9,12 @@ function parameters(
     t, A, n0, m_max, p_max=p_from_m(m_max), tol=eps(float(real(Base.promote_eltype(t, A))))
 )
     tnorm = abs(t)
+    θ = coefficients(tol)
+    T = float(Base.promote_eltype(t, A, θ))
     iszero(tnorm) && return (m=0, s=1)
     Anorm = opnormest1(A)
     iszero(Anorm) && return (m=0, s=1)
     tAnorm = tnorm * Anorm
-    T = float(real(Base.promote_eltype(t, A)))
-    θ = coefficients(T(tol))
     ℓ = 2 # §3: “where the positive integer ℓ is a parameter (typically set to 1 or 2)”
     if tAnorm * (n0 * m_max) ≤ θ[m_max] * (2 * ℓ * p_max * (p_max + 3)) # (3.13) is satisfied
         m_opt = 0
