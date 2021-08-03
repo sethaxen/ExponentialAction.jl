@@ -1,24 +1,18 @@
-using ExponentialAction, ChainRulesCore, LinearAlgebra, Test
+using ExponentialAction, ChainRulesCore, ChainRulesTestUtils, LinearAlgebra, Test
+using ExponentialAction: _opnormInf
 
 @testset "Utilities" begin
     @testset "_opnormInf" begin
         A = randn(ComplexF64, 10)
-        @test ExponentialAction._opnormInf(A) ≈
-              ExponentialAction._opnormInf(reshape(A, 10, 1))
-        @test ExponentialAction._opnormInf(A) ≈ norm(A, Inf)
+        @test _opnormInf(A) ≈ _opnormInf(reshape(A, 10, 1))
+        @test _opnormInf(A) ≈ norm(A, Inf)
         A = randn(ComplexF64, 10, 10)
-        @test ExponentialAction._opnormInf(A) ≈ opnorm(A, Inf)
+        @test _opnormInf(A) ≈ opnorm(A, Inf)
     end
 
     @testset "_opnormInf non-differentiable" begin
-        A = randn(ComplexF64, 10)
-        n, back = ChainRulesCore.rrule(ExponentialAction._opnormInf, A)
-        @test n == ExponentialAction._opnormInf(A)
-        @test @inferred(back(1.0)) === (DoesNotExist(), DoesNotExist())
-        A = randn(ComplexF64, 10, 10)
-        n, back = ChainRulesCore.rrule(ExponentialAction._opnormInf, A)
-        @test n == ExponentialAction._opnormInf(A)
-        @test @inferred(back(1.0)) === (DoesNotExist(), DoesNotExist())
+        test_rrule(_opnormInf, randn(ComplexF64, 10) ⊢ NoTangent(); atol=1e-6)
+        test_rrule(_opnormInf, randn(ComplexF64, 10, 10) ⊢ NoTangent(); atol=1e-6)
     end
 
     @testset "opnormest1" begin
