@@ -19,4 +19,12 @@ using ExponentialAction: _opnormInf
         A = randn(ComplexF64, 10, 10)
         @test ExponentialAction.opnormest1(A) ≈ opnorm(A, 1)
     end
+
+    @testset "_cld" begin
+        @test @inferred(ExponentialAction._cld(1, 2)) === 1
+        @test @inferred(ExponentialAction._cld(6, 2.5)) === 3
+        @test @inferred(ExponentialAction._cld(6, 3)) === 2
+        @test @inferred(ExponentialAction._cld(6, 4)) === 2
+        @test @inferred(ExponentialAction._cld(1, 0)) === typemax(Int)
+    end
 end
