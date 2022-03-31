@@ -56,4 +56,16 @@ Tdouble = (Float64, ComplexF64)
         @test_throws DomainError expv(t, A, B; tol=eps(Float64) / 100)
         @test_throws DomainError expv(big(t), big.(A), big.(B))
     end
+
+    @testset "no errors for high norm" begin
+        # https://github.com/sethaxen/ExponentialAction.jl/issues/10
+        t = 20.0
+        A = [-4.19   0.0     8.75   0.0   0.0;
+              0.0  -57.45   33.26   0.0   0.0;
+              0.0    0.0  -175.05   0.0   0.0;
+              4.19  57.45    0.0  -87.53  6.28;
+              0.0    0.0    13.13   0.0  -6.28]
+        B = ones(size(A, 2))
+        @test expv(t, A, B) ≈ exp(t * A) * B
+    end
 end
