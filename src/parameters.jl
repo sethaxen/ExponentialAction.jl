@@ -21,7 +21,7 @@ function parameters(
         Cm_opt = T(Inf)
         # work around argmin not taking a function
         for m in 1:m_max
-            Cm = m * ceil(Int, tAnorm / θ[m])
+            Cm = m * T(ceil(tAnorm / θ[m]))
             if Cm < Cm_opt
                 m_opt = m
                 Cm_opt = Cm
@@ -43,7 +43,7 @@ function parameters(
             m_min = p * (p - 1) - 1
             # work around argmin not taking a function
             for m in m_min:m_max
-                Cm = m * ceil(Int, α / θ[m])
+                Cm = m * T(ceil(α / θ[m]))
                 if Cm < Cm_opt || (Cm == Cm_opt && m < m_opt)
                     m_opt = m
                     Cm_opt = Cm
