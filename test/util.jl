@@ -1,5 +1,5 @@
 using ExponentialAction, ChainRulesCore, ChainRulesTestUtils, LinearAlgebra, Test
-using ExponentialAction: _opnormInf
+using ExponentialAction: _opnormInf, asint
 
 @testset "Utilities" begin
     @testset "_opnormInf" begin
@@ -18,5 +18,10 @@ using ExponentialAction: _opnormInf
     @testset "opnormest1" begin
         A = randn(ComplexF64, 10, 10)
         @test ExponentialAction.opnormest1(A) ≈ opnorm(A, 1)
+    end
+
+    @testset "asint" begin
+        @test asint(float(typemax(Int)*10)) == typemax(Int)
+        @test asint(37.0)) == 37
     end
 end
