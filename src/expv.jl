@@ -31,13 +31,16 @@ function expv(t, A, B; shift=true, tol=default_tolerance(t, A, B))
     degree_opt, scale = parameters(t, A, size(B, 2); tol=tol)  # m*, s
     η = exp(t * μ / scale)  # term for undoing shifting
     F = one(η) * B
-    for i in 1:(params.s)
+    for i in 1:scale
         c1 = _opnormInf(B)
-        for j in 1:(params.m)
-            B = (A * B) * (t / (params.s * j))
+        # compute F ← exp(t A / scale) * F
+        # let Zᵢ = Z
+        for j in 1:degree_opt  # use Taylor series of exp(t A / scale)
+            B = (A * B) * (t / (scale * j))
             c2 = _opnormInf(B)
             F += B
-            c1 + c2 ≤ tol * _opnormInf(F) && break
+            norm_tail = c1 + c2
+            norm_tail ≤ tol * _opnormInf(F) && break
             c1 = c2
         end
         F *= η
