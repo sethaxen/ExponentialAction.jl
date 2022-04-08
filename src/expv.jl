@@ -22,18 +22,14 @@ The algorithm is described in [^AlMohyHigham2011].
 """
 function expv(t, A, B; shift=true, tol=default_tolerance(t, A, B))
     n = LinearAlgebra.checksquare(A)
-    # §3: “Our experience indicates that p_max = 8 and m_max = 55 are appropriate choices.”
-    p_max = 8
-    m_max = 55
-    n0 = size(B, 2)
     if shift
         μ = tr(A) / n
         A -= μ * I
     else
         μ = zero(float(eltype(A)))
     end
-    params = parameters(t, A, n0, m_max, p_max, tol)
-    η = exp(t * μ / params.s)
+    degree_opt, scale = parameters(t, A, size(B, 2); tol=tol)  # m*, s
+    η = exp(t * μ / scale)  # term for undoing shifting
     F = one(η) * B
     for i in 1:(params.s)
         c1 = _opnormInf(B)
