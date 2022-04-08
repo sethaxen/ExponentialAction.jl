@@ -3,6 +3,7 @@ module ExponentialAction
 using LinearAlgebra
 using ChainRulesCore: ChainRulesCore
 using SparseArrays: sparse
+using Compat: findmin
 
 include("util.jl")
 include("coefficients.jl")
