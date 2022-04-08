@@ -20,7 +20,7 @@ The algorithm is described in [^AlMohyHigham2011].
     doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
     eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
 """
-function expv(t, A, B; shift=true, tol=eps(float(real(Base.promote_eltype(t, A, B)))))
+function expv(t, A, B; shift=true, tol=default_tolerance(t, A, B))
     n = LinearAlgebra.checksquare(A)
     # §3: “Our experience indicates that p_max = 8 and m_max = 55 are appropriate choices.”
     p_max = 8

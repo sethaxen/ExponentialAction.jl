@@ -1,5 +1,5 @@
 using ExponentialAction, ChainRulesCore, ChainRulesTestUtils, LinearAlgebra, Test
-using ExponentialAction: _opnormInf, asint
+using ExponentialAction: _opnormInf
 
 @testset "Utilities" begin
     @testset "_opnormInf" begin
@@ -21,7 +21,15 @@ using ExponentialAction: _opnormInf, asint
     end
 
     @testset "asint" begin
-        @test asint(float(typemax(Int)*10)) == typemax(Int)
-        @test asint(37.0)) == 37
+        @test ExponentialAction.asint(float(typemax(Int)*10)) == typemax(Int)
+        @test ExponentialAction.asint(37.0)) == 37
+    end
+
+    @testset "default_tolerance" begin
+        @test ExponentialAction.default_tolerance(randn()) ≈ eps(Float64)
+        @test ExponentialAction.default_tolerance(randn(ComplexF64)) ≈ eps(Float64)
+        @test ExponentialAction.default_tolerance(randn(Float32)) ≈ eps(Float32)
+        @test ExponentialAction.default_tolerance(1, randn()) ≈ eps(Float64)
+        test_rrule(ExponentialAction.default_tolerance, randn() ⊢ NoTangent(); atol=1e-6)
     end
 end
