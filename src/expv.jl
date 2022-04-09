@@ -75,11 +75,11 @@ function expv_taylor(t, A, B, degree_max; tol=default_tol(t, A, B))
     norm_tail_old = _opnormInf(Z)
     for j in 1:degree_max
         Z = (A * Z) * (t / j)  # (t A)ʲ/j! * B
-        norm_tail = _opnormInf(Z)
         F += Z
         # check if ratio of norm of tail and norm of series is below tolerance
-        norm_tail = norm_tail_old + norm_tail
-        norm_tail ≤ tol * _opnormInf(F) && break
+        norm_tail = _opnormInf(Z)
+        norm_tail_tot = norm_tail_old + norm_tail
+        norm_tail_tot ≤ tol * _opnormInf(F) && break
         norm_tail_old = norm_tail
     end
     return F
