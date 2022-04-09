@@ -36,9 +36,9 @@ end
         B = randn(TB, n, Bdims2...)
         T = Base.promote_eltype(t, A, B)
         rT = real(T)
-        @inferred expv(t, A, B; shift=shift)
-        @test expv(t, A, B; shift=shift) ≈ exp(Matrix(t * A)) * B
-        @test eltype(expv(t, A, B; shift=shift)) === T
+        @inferred expv(t, A, B; shift)
+        @test expv(t, A, B; shift) ≈ exp(Matrix(t * A)) * B
+        @test eltype(expv(t, A, B; shift)) === T
     end
 
     @testset "expv(t::$Tt, A::SparseMatrixCSC{$TA}, B::Array{$TB,$(length(Bdims2)+1)}), tscale=$tscale, shift=$shift" for Tset in
@@ -57,9 +57,9 @@ end
         B = randn(TB, n, Bdims2...)
         T = Base.promote_eltype(t, A, B)
         rT = real(T)
-        @inferred expv(t, A, B; shift=shift)
-        @test expv(t, A, B; shift=shift) ≈ exp(Matrix(t * A)) * B
-        @test eltype(expv(t, A, B; shift=shift)) === T
+        @inferred expv(t, A, B; shift)
+        @test expv(t, A, B; shift) ≈ exp(Matrix(t * A)) * B
+        @test eltype(expv(t, A, B; shift)) === T
     end
 
     @testset "errors if tolerance too low" begin

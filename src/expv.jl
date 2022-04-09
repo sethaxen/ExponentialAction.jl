@@ -41,12 +41,12 @@ function expv(t, A, B; shift=true, tol=default_tol(t, A, B))
     else
         μ = zero(float(eltype(A)))
     end
-    degree_opt, scale = parameters(t, A, size(B, 2); tol=tol)  # m*, s
+    degree_opt, scale = parameters(t, A, size(B, 2); tol)  # m*, s
     τ = t * one(μ) / scale
     η = exp(τ * μ)  # term for undoing shifting
     F = one(η) * B
     for _ in 1:scale
-        F = expv_taylor(τ, A, F, degree_opt; tol=tol)
+        F = expv_taylor(τ, A, F, degree_opt; tol)
         F *= η
     end
     return F
