@@ -6,17 +6,20 @@ Compute Taylor series parameters needed for ``\\exp(t*A) * B``.
 This is Code Fragment 3.1 from [^AlMohyHigham2011].
 
 # Keywords
-- `tol`: the desired relative tolerance
-- `degree_max=55`: the maximum degree of the truncated Taylor series that will be used. This
-  is ``m_{\\mathrm{max}}`` in [^AlMohyHigham2011], where they recommend a value of 55 in §3.
-- `ℓ=2`: the number of columns in the matrix that is multiplied for norm estimation (note:
-  currently only used for control flow.). Recommended values are 1 or 2.
+
+  - `tol`: the desired relative tolerance
+  - `degree_max=55`: the maximum degree of the truncated Taylor series that will be used.
+    This is ``m_{\\mathrm{max}}`` in [^AlMohyHigham2011], where they recommend a value of 55
+    in §3.
+  - `ℓ=2`: the number of columns in the matrix that is multiplied for norm estimation (note:
+    currently only used for control flow.). Recommended values are 1 or 2.
 
 # Returns
-- `degree_opt`: the degree of the truncated Taylor series that will be used. This is
-  ``m^*`` in [^AlMohyHigham2011],
-- `scale`: the amount of scaling ``s`` that will be applied to ``A``. The truncated Taylor
-  series of ``\\exp(t A / s)`` will be applied ``s`` times to ``B``.
+
+  - `degree_opt`: the degree of the truncated Taylor series that will be used. This is
+    ``m^*`` in [^AlMohyHigham2011],
+  - `scale`: the amount of scaling ``s`` that will be applied to ``A``. The truncated Taylor
+    series of ``\\exp(t A / s)`` will be applied ``s`` times to ``B``.
 """
 function parameters(t, A, ncols_B; tol=default_tol(t, A), degree_max::Int=55, ℓ::Int=2)
     return _parameters(AD.primal_value(t), AD.primal_value(A), ncols_B, degree_max, ℓ, tol)

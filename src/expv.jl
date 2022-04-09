@@ -6,9 +6,11 @@ This is significantly faster than the matrix exponential when the second dimensi
 much smaller than the first one. The "time" `t` may be real or complex.
 
 In short, the approach computes
+
 ```math
 F = \\left(\\prod_{i=1}^s T_m(tA / s)\\right) B,
 ```
+
 where ``T_m(X)`` is the Taylor series of `\\exp(X)` truncated to degree ``m = m^*``.
 The term ``s`` determines how many times the Taylor series acts on ``B``.
 ``m^*`` and ``s`` are chosen to minimize the number of matrix products needed while
@@ -60,9 +62,11 @@ Instead of computing the Taylor series ``T_m(tA)`` of the matrix exponential dir
 action on `B` is computed instead.
 
 The series is truncated early if
+
 ```math
 \\frac{\\lVert \\exp(t A) B - T_m(tA) B \\rVert_1}{\\lVert T_m(tA) B \\rVert_1} \\le \\mathrm{tol},
 ```
+
 where ``\\lVert X \\rVert_1`` is the operator 1-norm of the matrix ``X``.
 This condition is only approximately checked.
 """
