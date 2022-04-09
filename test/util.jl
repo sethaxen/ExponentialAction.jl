@@ -20,6 +20,11 @@ using ExponentialAction: _opnormInf
         @test ExponentialAction.opnormest1(A) ≈ opnorm(A, 1)
     end
 
+    @testset "asint" begin
+        @test ExponentialAction.asint(float(typemax(Int))) == typemax(Int)
+        @test ExponentialAction.asint(37.0) == 37
+    end
+
     @testset "default_tol" begin
         @test ExponentialAction.default_tol(randn()) ≈ eps(Float64)
         @test ExponentialAction.default_tol(randn(ComplexF64)) ≈ eps(Float64)
