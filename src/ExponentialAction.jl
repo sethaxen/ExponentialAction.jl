@@ -19,6 +19,7 @@ include("util.jl")
 include("coefficients.jl")
 include("parameters.jl")
 include("expv.jl")
+include("sequence.jl")
 
 export expv
 
