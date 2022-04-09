@@ -53,7 +53,7 @@ end
         shift in (true, false)
 
         t = tscale * randn(Tt)
-        A = VERSION ≥ v"1.1" ? sprandn(TA, n, n, 1 / n) : TA.(sprandn(n, n, 1 / n))
+        A = sprandn(TA, n, n, 1 / n)
         B = randn(TB, n, Bdims2...)
         T = Base.promote_eltype(t, A, B)
         rT = real(T)
