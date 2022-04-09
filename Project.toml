@@ -13,7 +13,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 AbstractDifferentiation = "0.4"
 ChainRulesCore = "0.9.7, 1"
 ChainRulesTestUtils = "0.7, 1"
-julia = "1"
+julia = "1.6"
 
 [extras]
 ChainRulesTestUtils = "cdddcdb0-9152-4a09-a978-84456f9df70a"
