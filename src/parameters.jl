@@ -5,9 +5,7 @@ Compute Taylor series parameters needed for `exp(t*A) * B`.
 
 This is Code Fragment 3.1 from [^AlMohyHigham2011].
 """
-function parameters(
-    t, A, n0, m_max, p_max=p_from_m(m_max), tol=eps(float(real(Base.promote_eltype(t, A))))
-)
+function parameters(t, A, n0, m_max, p_max=p_from_m(m_max), tol=default_tol(t, A))
     tnorm = abs(t)
     iszero(tnorm) && return (m=0, s=1)
     Anorm = opnormest1(A)
