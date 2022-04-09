@@ -21,6 +21,6 @@ include("parameters.jl")
 include("expv.jl")
 include("sequence.jl")
 
-export expv
+export expv, expv_sequence
 
 end
