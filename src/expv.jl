@@ -27,8 +27,8 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
 
 # Keywords
 
-  - `shift=true`: Expand the Taylor series about ``A-μI=0`` instead of
-    ``A=0``, where ``μ = \\operatorname{tr}(A) / n``, to speed up convergence. See
+  - `shift=true`: Expand the Taylor series about the ``n \\times n`` matrix ``A-μI=0``
+    instead of ``A=0``, where ``μ = \\operatorname{tr}(A) / n`` to speed up convergence. See
     §3.1 of [^AlMohyHigham2011].
   - `tol`: The relative tolerance at which to compute the result. Defaults to the tolerance
     of the eltype of the result.
