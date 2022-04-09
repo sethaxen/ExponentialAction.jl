@@ -6,7 +6,7 @@ CurrentModule = ExponentialAction
 
 ## Introduction
 
-ExponentialAction is a lightweight package that implements the action of the [Matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential) using the algorithm of Al-Mohy and Higham [^AlMohyHigham2011][^Expmv].
+`ExponentialAction.jl` is a lightweight package that implements the action of the [Matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential) using the algorithm of Al-Mohy and Higham [^AlMohyHigham2011][^Expmv].
 For details, see the docstring of [`expv`](@ref).
 
 [^AlMohyHigham2011]: Al-Mohy, Awad H. and Higham, Nicholas J. (2011) Computing the Action of the Matrix Exponential, with an Application to Exponential Integrators.
