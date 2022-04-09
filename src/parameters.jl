@@ -6,6 +6,11 @@ Compute Taylor series parameters needed for `exp(t*A) * B`.
 This is Code Fragment 3.1 from [^AlMohyHigham2011].
 """
 function parameters(t, A, n0, m_max, p_max=p_from_m(m_max), tol=default_tol(t, A))
+    # avoid operator-overloading ADs differentiating through the function
+    return _parameters(AD.primal_value(t), AD.primal_value(A), n0, m_max, p_max, tol)
+end
+
+function _parameters(t, A, n0, m_max, p_max, tol)
     tnorm = abs(t)
     iszero(tnorm) && return (m=0, s=1)
     Anorm = opnormest1(A)
@@ -54,14 +59,7 @@ function parameters(t, A, n0, m_max, p_max=p_from_m(m_max), tol=default_tol(t, A
 end
 # work around opnorm(A, 1) and (A^2)*A having very slow defaults for these arrays
 # https://github.com/sethaxen/ExponentialAction.jl/issues/3
-function parameters(
-    t,
-    A::Union{Bidiagonal,Tridiagonal},
-    n0,
-    m_max,
-    p_max=p_from_m(m_max),
-    tol=eps(float(real(Base.promote_eltype(t, A)))),
-)
+function _parameters(t, A::Union{Bidiagonal,Tridiagonal}, n0, m_max, p_max, tol)
     return parameters(t, sparse(A), n0, m_max, p_max, tol)
 end
 

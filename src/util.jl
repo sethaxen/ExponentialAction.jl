@@ -1,6 +1,6 @@
 # workaround for opnorm(::AbstractVector, Inf) not being implemented
-_opnormInf(B) = opnorm(B, Inf)
-_opnormInf(B::AbstractVector) = norm(B, Inf)
+_opnormInf(B) = opnorm(AD.primal_value(B), Inf)
+_opnormInf(B::AbstractVector) = norm(AD.primal_value(B), Inf)
 
 # we only use _opnormInf for control flow, so avoid differentiating through it
 ChainRulesCore.@non_differentiable _opnormInf(B)
