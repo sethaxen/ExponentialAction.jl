@@ -6,7 +6,7 @@ Compute Taylor series parameters needed for ``\\exp(t*A) * B``.
 This is Code Fragment 3.1 from [^AlMohyHigham2011].
 
 # Keywords
-- `tol`: the desired tolerance
+- `tol`: the desired relative tolerance
 - `degree_max=55`: the maximum degree of the truncated Taylor series that will be used. This
   is ``m_{\\mathrm{max}}`` in [^AlMohyHigham2011], where they recommend a value of 55 in §3.
 - `ℓ=2`: the number of columns in the matrix that is multiplied for norm estimation (note:
