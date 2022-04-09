@@ -1,11 +1,11 @@
 """
     expv_sequence(ts::AbstractVector, A, B; kwargs...)
 
-Compute ``\\exp(t_i A)B`` for the (sorted) sequence of (real) time points ``\\{t_i\\}`.
+Compute ``\\exp(t_i A)B`` for the (sorted) sequence of (real) time points ``\\{t_i\\}``.
 
 At each time point, the result ``F_i`` is computed as
 ```math
-F_i = \\exp{(t_i - t_{i-1}) A} F_{i - 1}
+F_i = \\exp\\left((t_i - t_{i-1}) A\\right) F_{i - 1}
 ```
 using [`expv`](@ref), where ``t_0 = 0`` and ``F_0 = B``.
 For details, see Equation 5.2 of [^AlMohyHigham2011].
