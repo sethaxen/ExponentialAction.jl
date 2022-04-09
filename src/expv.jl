@@ -4,7 +4,17 @@
 Compute `exp(t*A) * B` without computing `t * A` or the matrix exponential.
 This is significantly faster than the matrix exponential when the second dimension of `B` is
 much smaller than the first one. The "time" `t` may be real or complex.
-The algorithm is described in [^AlMohyHigham2011].
+
+In short, the approach computes
+```math
+F = \\left(\\prod_{i=1}^s T_m(tA / s)\\right) * B,
+```
+where ``T_m(X)`` is the Taylor series of `\\exp(X)` truncated to degree ``m = m^*``.
+The term ``s`` determines how many times the Taylor series acts on ``B``.
+``m^*`` and ``s`` are chosen to minimize the number of matrix products needed while
+maintaining the required tolerance.
+
+The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
 
 # Keywords
 
