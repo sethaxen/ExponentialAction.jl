@@ -18,7 +18,9 @@ This is Code Fragment 3.1 from [^AlMohyHigham2011].
 - `scale`: the amount of scaling ``s`` that will be applied to ``A``. The truncated Taylor
   series of ``\\exp(t A / s)`` will be applied ``s`` times to ``B``.
 """
-function parameters(t, A, ncols_B; tol=default_tolerance(t, A), degree_max::Int=55, ℓ::Int=2)
+function parameters(
+    t, A, ncols_B; tol=default_tolerance(t, A), degree_max::Int=55, ℓ::Int=2
+)
     t_norm = abs(t)
     iszero(t_norm) && return (0, 1)
     Anorm = opnormest1(A)
@@ -48,7 +50,8 @@ function parameters(t, A, ncols_B; tol=default_tolerance(t, A), degree_max::Int=
             degree_min = p * (p - 1) - 1
             for degree in degree_min:degree_max
                 num_mat_mul = asint(degree * cld(α, θ[degree]))
-                if num_mat_mul < num_mat_mul_opt || (num_mat_mul == num_mat_mul_opt && degree < degree_opt)
+                if num_mat_mul < num_mat_mul_opt ||
+                    (num_mat_mul == num_mat_mul_opt && degree < degree_opt)
                     degree_opt = degree
                     num_mat_mul_opt = num_mat_mul
                 end

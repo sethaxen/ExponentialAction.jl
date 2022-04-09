@@ -21,8 +21,8 @@ using ExponentialAction: _opnormInf
     end
 
     @testset "asint" begin
-        @test ExponentialAction.asint(float(typemax(Int)*10)) == typemax(Int)
-        @test ExponentialAction.asint(37.0)) == 37
+        @test ExponentialAction.asint(float(typemax(Int) * 10)) == typemax(Int)
+        @test ExponentialAction.asint(37.0) == 37
     end
 
     @testset "default_tolerance" begin
