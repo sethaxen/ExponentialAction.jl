@@ -1,30 +1,22 @@
 """
     expv(t, A, B; shift=true, tol)
 
-Compute `exp(t*A) * B` without computing `t * A` or the matrix exponential.
-This is significantly faster than the matrix exponential when the second dimension of `B` is
-much smaller than the first one. The "time" `t` may be real or complex.
+Compute ``\\exp(tA)B`` without computing ``tA`` or the matrix exponential  ``\\exp(tA)``.
+
+Computing the action of the matrix exponential is significantly faster than computing
+the matrix exponential and then multiplying it when the second dimension of ``B`` is
+much smaller than the first one. The "time" ``t`` may be real or complex.
 
 In short, the approach computes
-
 ```math
-F = \\left(\\prod_{i=1}^s T_m(tA / s)\\right) B,
+F = T_m(tA / s)^s B,
 ```
-
-where ``T_m(X)`` is the Taylor series of `\\exp(X)` truncated to degree ``m = m^*``.
+where ``T_m(X)`` is the Taylor series of ``\\exp(X)`` truncated to degree ``m = m^*``.
 The term ``s`` determines how many times the Taylor series acts on ``B``.
 ``m^*`` and ``s`` are chosen to minimize the number of matrix products needed while
 maintaining the required tolerance `tol`.
 
 The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
-
-# Keywords
-
-  - `shift=true`: Expand the Taylor series of `exp(t*A)` about ``A-μI=0`` instead of
-    ``A=0``, where ``μ = \\operatorname{tr}(A) / n`` to speed up convergence. See
-    §3.1 of [^AlMohyHigham2011].
-  - `tol`: The relative tolerance at which to compute the result. Defaults to the tolerance
-    of the eltype of the result.
 
 [^AlMohyHigham2011]: Al-Mohy, Awad H. and Higham, Nicholas J. (2011)
     Computing the Action of the Matrix
@@ -32,6 +24,14 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
     Computing, 33 (2). pp. 488-511. ISSN 1064-8275
     doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
     eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
+
+# Keywords
+
+  - `shift=true`: Expand the Taylor series about ``A-μI=0`` instead of
+    ``A=0``, where ``μ = \\operatorname{tr}(A) / n``, to speed up convergence. See
+    §3.1 of [^AlMohyHigham2011].
+  - `tol`: The relative tolerance at which to compute the result. Defaults to the tolerance
+    of the eltype of the result.
 """
 function expv(t, A, B; shift=true, tol=default_tol(t, A, B))
     n = LinearAlgebra.checksquare(A)
@@ -56,10 +56,10 @@ expv(t, A::Diagonal, B; kwargs...) = exp.(t .* A.diag) .* B
 """
     expv_taylor(t, A, B, degree_max; tol)
 
-Compute `exp(t*A)*B` using the truncated Taylor series with degree ``m=`` `degree_max`.
+Compute ``\\exp(tA)B`` using the truncated Taylor series with degree ``m=`` `degree_max`.
 
 Instead of computing the Taylor series ``T_m(tA)`` of the matrix exponential directly, its
-action on `B` is computed instead.
+action on ``B`` is computed instead.
 
 The series is truncated early if
 
