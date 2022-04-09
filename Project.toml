@@ -1,7 +1,7 @@
 name = "ExponentialAction"
 uuid = "e24c0720-ea99-47e8-929e-571b494574d3"
 authors = ["Seth Axen <seth.axen@gmail.com> and contributors"]
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 AbstractDifferentiation = "c29ec348-61ec-40c8-8164-b8c60e9d9f3d"
