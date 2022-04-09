@@ -72,8 +72,8 @@ function _parameters(t, A::Union{Bidiagonal,Tridiagonal}, ncols_B, degree_max, �
     return _parameters(t, sparse(A), ncols_B, degree_max, ℓ, tol)
 end
 
-# avoid differentiating through parameters with ChainRules-compatible ADs
-ChainRulesCore.@non_differentiable parameters(t, A, ncols_B)
+# avoid differentiating through _parameters with ChainRules-compatible ADs
+ChainRulesCore.@non_differentiable _parameters(t, A, ncols_B, degree_max, ℓ, tol)
 
 # solution p to p(p-1) ≤ m + 1
 p_from_degree_max(degree_max) = Int(fld(1 + sqrt(5 + 4 * degree_max), 2))
