@@ -25,11 +25,11 @@ using ExponentialAction: _opnormInf
         @test ExponentialAction.asint(37.0) == 37
     end
 
-    @testset "default_tolerance" begin
-        @test ExponentialAction.default_tolerance(randn()) ≈ eps(Float64)
-        @test ExponentialAction.default_tolerance(randn(ComplexF64)) ≈ eps(Float64)
-        @test ExponentialAction.default_tolerance(randn(Float32)) ≈ eps(Float32)
-        @test ExponentialAction.default_tolerance(1, randn()) ≈ eps(Float64)
-        test_rrule(ExponentialAction.default_tolerance, randn() ⊢ NoTangent(); atol=1e-6)
+    @testset "default_tol" begin
+        @test ExponentialAction.default_tol(randn()) ≈ eps(Float64)
+        @test ExponentialAction.default_tol(randn(ComplexF64)) ≈ eps(Float64)
+        @test ExponentialAction.default_tol(randn(Float32)) ≈ eps(Float32)
+        @test ExponentialAction.default_tol(1, randn()) ≈ eps(Float64)
+        test_rrule(ExponentialAction.default_tol, randn() ⊢ NoTangent(); atol=1e-6)
     end
 end

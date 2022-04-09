@@ -30,7 +30,7 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
     doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
     eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
 """
-function expv(t, A, B; shift=true, tol=default_tolerance(t, A, B))
+function expv(t, A, B; shift=true, tol=default_tol(t, A, B))
     n = LinearAlgebra.checksquare(A)
     if shift
         μ = tr(A) / n
@@ -50,7 +50,7 @@ function expv(t, A, B; shift=true, tol=default_tolerance(t, A, B))
 end
 expv(t, A::Diagonal, B; kwargs...) = exp.(t .* A.diag) .* B
 
-function expv_taylor(t, A, B, degree_opt; tol=default_tolerance(t, A, B))
+function expv_taylor(t, A, B, degree_opt; tol=default_tol(t, A, B))
     F = Z = B
     norm_tail_old = _opnormInf(Z)
     for j in 1:degree_opt

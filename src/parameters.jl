@@ -18,9 +18,11 @@ This is Code Fragment 3.1 from [^AlMohyHigham2011].
 - `scale`: the amount of scaling ``s`` that will be applied to ``A``. The truncated Taylor
   series of ``\\exp(t A / s)`` will be applied ``s`` times to ``B``.
 """
-function parameters(
-    t, A, ncols_B; tol=default_tolerance(t, A), degree_max::Int=55, ℓ::Int=2
-)
+function parameters(t, A, ncols_B; tol=default_tol(t, A), degree_max::Int=55, ℓ::Int=2)
+    return _parameters(AD.primal_value(t), AD.primal_value(A), ncols_B, degree_max, ℓ, tol)
+end
+
+function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
     t_norm = abs(t)
     iszero(t_norm) && return (0, 1)
     Anorm = opnormest1(A)
@@ -63,8 +65,8 @@ function parameters(
 end
 # work around opnorm(A, 1) and (A^2)*A having very slow defaults for these arrays
 # https://github.com/sethaxen/ExponentialAction.jl/issues/3
-function parameters(t, A::Union{Bidiagonal,Tridiagonal}, ncols_B; kwargs...)
-    return parameters(t, sparse(A), ncols_B; kwargs...)
+function _parameters(t, A::Union{Bidiagonal,Tridiagonal}, ncols_B, degree_max, ℓ, tol)
+    return _parameters(t, sparse(A), ncols_B, degree_max, ℓ, tol)
 end
 
 # avoid differentiating through parameters with ChainRules-compatible ADs
