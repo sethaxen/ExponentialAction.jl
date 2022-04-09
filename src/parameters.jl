@@ -5,9 +5,12 @@ Compute Taylor series parameters needed for `exp(t*A) * B`.
 
 This is Code Fragment 3.1 from [^AlMohyHigham2011].
 """
-function parameters(
-    t, A, n0, m_max, p_max=p_from_m(m_max), tol=eps(float(real(Base.promote_eltype(t, A))))
-)
+function parameters(t, A, n0, m_max, p_max=p_from_m(m_max), tol=default_tol(t, A))
+    # avoid operator-overloading ADs differentiating through the function
+    return _parameters(AD.primal_value(t), AD.primal_value(A), n0, m_max, p_max, tol)
+end
+
+function _parameters(t, A, n0, m_max, p_max, tol)
     tnorm = abs(t)
     iszero(tnorm) && return (m=0, s=1)
     Anorm = opnormest1(A)
@@ -21,13 +24,13 @@ function parameters(
         Cm_opt = T(Inf)
         # work around argmin not taking a function
         for m in 1:m_max
-            Cm = m * T(ceil(tAnorm / θ[m]))
+            Cm = m * T(cld(tAnorm, θ[m]))
             if Cm < Cm_opt
                 m_opt = m
                 Cm_opt = Cm
             end
         end
-        s = ceil(Int, Cm_opt / m_opt)
+        s = Int(cld(Cm_opt, m_opt))
     else
         # TODO: replace powers of A here and below with opnormest(pow, A, 1)
         # see https://github.com/JuliaLang/julia/pull/39058
@@ -43,28 +46,21 @@ function parameters(
             m_min = p * (p - 1) - 1
             # work around argmin not taking a function
             for m in m_min:m_max
-                Cm = m * T(ceil(α / θ[m]))
+                Cm = m * T(cld(α, θ[m]))
                 if Cm < Cm_opt || (Cm == Cm_opt && m < m_opt)
                     m_opt = m
                     Cm_opt = Cm
                 end
             end
         end
-        s = max(ceil(Int, Cm_opt / m_opt), 1)
+        s = max(Int(cld(Cm_opt, m_opt)), 1)
     end
     return (m=m_opt, s=s)
 end
 # work around opnorm(A, 1) and (A^2)*A having very slow defaults for these arrays
 # https://github.com/sethaxen/ExponentialAction.jl/issues/3
-function parameters(
-    t,
-    A::Union{Bidiagonal,Tridiagonal},
-    n0,
-    m_max,
-    p_max=p_from_m(m_max),
-    tol=eps(float(real(Base.promote_eltype(t, A)))),
-)
-    return parameters(t, sparse(A), n0, m_max, p_max, tol)
+function _parameters(t, A::Union{Bidiagonal,Tridiagonal}, n0, m_max, p_max, tol)
+    return _parameters(t, sparse(A), n0, m_max, p_max, tol)
 end
 
 # avoid differentiating through parameters with ChainRules-compatible ADs
