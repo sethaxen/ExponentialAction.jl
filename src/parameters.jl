@@ -1,9 +1,16 @@
 """
     parameters(t, A, ncols_B; kwargs...) -> (degree_opt, scale)
 
-Compute Taylor series parameters needed for ``\\exp(t*A) * B``.
+Compute Taylor series parameters needed for ``\\exp(tA)B``.
 
 This is Code Fragment 3.1 from [^AlMohyHigham2011].
+
+[^AlMohyHigham2011]: Al-Mohy, Awad H. and Higham, Nicholas J. (2011)
+    Computing the Action of the Matrix
+    Exponential, with an Application to Exponential Integrators. SIAM Journal on Scientific
+    Computing, 33 (2). pp. 488-511. ISSN 1064-8275
+    doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
+    eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
 
 # Keywords
 

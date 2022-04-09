@@ -1,6 +1,8 @@
 # ExponentialAction
 
-[![Build Status](https://github.com/sethaxen/ExponentialAction.jl/workflows/CI/badge.svg)](https://github.com/sethaxen/ExponentialAction.jl/actions)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://sethaxen.github.io/ExponentialAction.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://sethaxen.github.io/ExponentialAction.jl/dev)
+[![Build Status](https://github.com/sethaxen/ExponentialAction.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/sethaxen/ExponentialAction.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/sethaxen/ExponentialAction.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/sethaxen/ExponentialAction.jl)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 [![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
@@ -16,13 +18,4 @@ ExponentialAction is a lightweight package that implements the action of the [Ma
 The API of this package is a single function `expv(t, A, B)` that computes `exp(t * A) * B` for a scalar `t`, matrix `A`, and matrix or vector `B`, without computing `exp(t * A)`.
 For large matrices `A`, this is significantly less expensive than calling `exp(t * A) * B` directly.
 
-While `exp(X)` is only defined in LinearAlgebra for `Diagonal`, `Symmetric{<:Real}`/`Hermitian`, and `StridedMatrix`, `expv` can take an arbitrary matrix type.
-It also can be differentiated using ForwardDiff, ReverseDiff, and Zygote.
-Note that currently this just means we avoid patterns such as type constraints or mutation that are problematic for these automatic differentiation engines; no custom rules are defined.
-This may change in the future.
-
-For description of keyword arguments, see the docstring of `expv`.
-
-## Related Packages
-
-[ExponentialUtilities.jl](https://github.com/SciML/ExponentialUtilities.jl) and [Expokit.jl](https://github.com/acroy/Expokit.jl) both implement an approximation to the action of the matrix exponential using Krylov subspaces.
+See the [Documentation](https://sethaxen.github.io/ExponentialAction.jl/stable) for details.
