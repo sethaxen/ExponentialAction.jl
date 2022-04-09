@@ -51,9 +51,10 @@ end
 expv(t, A::Diagonal, B; kwargs...) = exp.(t .* A.diag) .* B
 
 function expv_taylor(t, A, B, degree_opt; tol=default_tol(t, A, B))
+function expv_taylor(t, A, B, degree_max; tol=default_tol(t, A, B))
     F = Z = B
     norm_tail_old = _opnormInf(Z)
-    for j in 1:degree_opt
+    for j in 1:degree_max
         Z = (A * Z) * (t / j)  # (t A)ʲ/j! * B
         norm_tail = _opnormInf(Z)
         F += Z
