@@ -53,21 +53,21 @@ function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, 
     if num_steps == 0
         return [F]
     elseif num_steps ≤ scale
+        # points are intermediate matrices of a scaling sequence
         _, Fs_tail = _expv_sequence_core(Δt, A, F, degree_opt, μ, num_steps, tol)
         return vcat([F], Fs_tail)
     else
         num_steps_per_scale = fld(num_steps, scale)  # d
         scale_actual, num_steps_last = fldmod(num_steps, num_steps_per_scale)  # (j, r)
         Fs = [F]
-        for i in 1:scale_actual
-            num_steps_per_scale == 0 && continue
-            F, Fs_tail = _expv_sequence_core_cache(
-                Δt, A, F, degree_opt, μ, num_steps_per_scale, tol
-            )
+        for i in 1:(scale_actual + 1)
+            # for each scaling step, points are intermediate matrices
+            # get number of steps to take in this scale
+            d = i ≤ scale_actual ? num_steps_per_scale : num_steps_last
+            d == 0 && continue
+            F, Fs_tail = _expv_sequence_core_cache(Δt, A, F, degree_opt, μ, d, tol)
             Fs = vcat(Fs, Fs_tail)
         end
-        num_steps_last == 0 && return Fs
-        _, Fs_tail = _expv_sequence_core_cache(Δt, A, F, degree_opt, μ, num_steps_last, tol)
         return vcat(Fs, Fs_tail)
     end
 end
