@@ -85,6 +85,25 @@ function expv_taylor(t, A, B, degree_max; tol=default_tol(t, A, B))
     return F
 end
 
+"""
+    expv_taylor_cache(t, A, B, degree_max, k, Z; tol)
+
+Compute ``\\exp(tkA)B`` using the truncated Taylor series with degree ``m=`` `degree_max`.
+
+This method stores all matrix products in a cache `Z`, where
+``Z_p = (t A)^(p-1) / (p-1)! B``.
+This cache can be reused if ``k`` increases but ``t``, ``A``, and ``B`` are unchanged.
+
+`Z` is a vector of arrays of the same shape as `B` and is not mutated; instead the
+(possibly updated) cache is returned.
+
+# Returns
+  - `F::AbstractMatrix`: The action of the truncated Taylor series
+  - `Z::AbstractVector`: The cache of matrix products of the same shape as `F`. If the cache
+    is updated, then this is a different object than the input `Z`.
+
+See [`expv_taylor`](@ref).
+"""
 function expv_taylor_cache(t, A, B, degree_max, k, Zs; tol=default_tol(t, A, B))
     F = Z = B
     norm_tail_old = _opnormInf(Z)
