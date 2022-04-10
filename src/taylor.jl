@@ -43,6 +43,7 @@ This cache can be reused if ``k`` changes but ``t``, ``A``, and ``B`` are unchan
 (possibly updated) cache is returned.
 
 # Returns
+
   - `F::AbstractMatrix`: The action of the truncated Taylor series
   - `Z::AbstractVector`: The cache of matrix products of the same shape as `F`. If the cache
     is updated, then this is a different object than the input `Z`.

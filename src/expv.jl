@@ -24,7 +24,6 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
     Computing, 33 (2). pp. 488-511. ISSN 1064-8275
     doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
     eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
-
 # Keywords
 
   - `shift=true`: Expand the Taylor series about the ``n \\times n`` matrix ``A-μI=0``

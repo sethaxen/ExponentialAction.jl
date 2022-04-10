@@ -11,7 +11,6 @@ This is Code Fragment 3.1 from [^AlMohyHigham2011].
     Computing, 33 (2). pp. 488-511. ISSN 1064-8275
     doi: [10.1137/100788860](https://doi.org/10.1137/100788860)
     eprint: [eprints.maths.manchester.ac.uk/id/eprint/1591](http://eprints.maths.manchester.ac.uk/id/eprint/1591)
-
 # Keywords
 
   - `tol`: the desired relative tolerance
