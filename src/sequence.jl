@@ -68,7 +68,7 @@ function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, 
             F, Fs_tail = _expv_sequence_core_cache(Δt, A, F, degree_opt, μ, d, tol)
             Fs = vcat(Fs, Fs_tail)
         end
-        return vcat(Fs, Fs_tail)
+        return Fs
     end
 end
 
