@@ -36,13 +36,16 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
 function expv(t, A, B; shift=true, tol=default_tol(t, A, B))
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
     degree_opt, scale = parameters(t, A, size(B, 2); tol)  # m*, s
-    τ = t * one(μ) / scale
-    η = exp(τ * μ)  # term for undoing shifting
-    F = one(η) * B
-    for _ in 1:scale
-        F = expv_taylor(τ, A, F, degree_opt; tol)
-        F *= η
-    end
+    F = _expv_core(t * one(μ) / scale, A, B, degree_opt, μ, scale, tol)
     return F
 end
 expv(t, A::Diagonal, B; kwargs...) = exp.(t .* A.diag) .* B
+
+function _expv_core(Δt, A, B, degree_opt, μ, num_steps, tol)
+    η = exp(Δt * μ)
+    F = one(η) * B
+    for _ in 1:num_steps
+        F = expv_taylor(Δt, A, F, degree_opt; tol) * η  # new starting matrix
+    end
+    return F
+end
