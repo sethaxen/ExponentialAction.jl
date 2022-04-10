@@ -8,5 +8,6 @@ Random.seed!(1)  # set seed used for all testsets
     include("util.jl")
     include("taylor.jl")
     include("expv.jl")
+    include("sequence.jl")
     include("expv_autodiff.jl")
 end
