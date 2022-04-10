@@ -20,17 +20,16 @@ See [`expv`](@ref) for a description of acceptable `kwargs`.
 
 Compute `expv` over the uniformly spaced sequence.
 
-This algorithm takes special care to avoid overscaling and is described in Code Fragment 5.1
-of [^AlMohyHigham2011].
+This algorithm takes special care to avoid overscaling and to save and reuse matrix products
+and is described in Algorithm 5.2 of [^AlMohyHigham2011].
 """
 function expv_sequence(ts, A, B; kwargs...)
-    F = expv(ts[begin], A, B; kwargs...)
-    Fs = similar(ts, typeof(F))
-    Fs[begin] = F
-    for i in eachindex(ts)[(begin + 1):end]
-        Δt = @inbounds ts[i] - ts[i - 1]
-        F = expv(Δt, A, F; kwargs...)
-        Fs[i] = F
+    F = B
+    t_old = zero(ts[begin])
+    Fs = map(ts) do t
+        F = expv(t - t_old, A, F; kwargs...)
+        t_old = t
+        return F
     end
     return Fs
 end
@@ -49,27 +48,39 @@ function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, 
         μ = zero(float(eltype(A)))
     end
 
-    F = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
-    Fs = Vector{typeof(F)}(undef, num_steps + 1)
-    Fs[1] = F
-
     degree_opt, scale = parameters(t_span, A, ncols_B; tol)  # (m*, s)
+
+    F = F1 = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
+
+    if num_steps <= scale
+        η = exp(Δt * μ)
+        Fs_tail = map(1:num_steps) do k
+            F = expv_taylor(k * Δt, A, F, degree_opt; tol) * η
+            return F
+        end
+        Fs = vcat([F1], Fs_tail)
+        return Fs
+    end
+
     num_steps_per_scale = fld(num_steps, scale)  # d
     scale_actual, num_steps_last = fldmod(num_steps, num_steps_per_scale)  # (j, r)
 
     Z = F
     l = 1
-    for i in 1:scale_actual
+    Fs_tails = map(1:(scale_actual + 1)) do i
         if i > scale_actual
             num_steps_per_scale = num_steps_last
         end
-        for k in 1:num_steps_per_scale
-            l += 1
+        Zs = [Z]  # cache of matrix products
+        Fs_tail = map(1:num_steps_per_scale) do k
             η = exp(μ * k * Δt)
-            Fs[l] = F = expv_taylor(k * Δt, A, Z, degree_opt; tol) * η
+            F, Zs = expv_taylor_cache(Δt, A, Z, degree_opt, k, Zs; tol)
+            F *= η
+            return F
         end
         Z = F
+        return Fs_tail
     end
-
+    Fs = reduce(vcat, [[F1], Fs_tails...])
     return Fs
 end
