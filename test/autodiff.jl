@@ -38,14 +38,14 @@ function expv_sequence_range_jacobians(ba, ts, A, B; f=expv_sequence, kwargs...)
     tmin_jac = only(
         AD.jacobian(
             ba,
-            tmin -> reduce(vcat, f(range(tmin[1], tmax, npoints), A, B; kwargs...)),
+            tmin -> reduce(vcat, f(range(tmin[1], tmax; length=npoints), A, B; kwargs...)),
             [tmin],
         ),
     )
     tmax_jac = only(
         AD.jacobian(
             ba,
-            tmax -> reduce(vcat, f(range(tmin, tmax[1], npoints), A, B; kwargs...)),
+            tmax -> reduce(vcat, f(range(tmin, tmax[1]; length=npoints), A, B; kwargs...)),
             [tmax],
         ),
     )
@@ -83,7 +83,7 @@ end
         tmin = 10 * rand()
         tmax = tmin + 1
         npoints = 10
-        ts = range(tmin, tmax, npoints)
+        ts = range(tmin, tmax; length=npoints)
         A = randn(5, 5)
         B = randn(5)
         fd_backend = AD.FiniteDifferencesBackend()
