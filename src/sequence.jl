@@ -45,7 +45,7 @@ function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, 
 
     F1 = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
 
-    if num_steps <= scale
+    elseif num_steps ≤ scale
         return vcat([F1], _expv_sequence_core1(Δt, A, F1, degree_opt, μ, num_steps, tol))
     end
 
