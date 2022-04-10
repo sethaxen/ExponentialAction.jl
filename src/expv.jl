@@ -34,13 +34,7 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
     of the eltype of the result.
 """
 function expv(t, A, B; shift=true, tol=default_tol(t, A, B))
-    n = LinearAlgebra.checksquare(A)
-    if shift
-        μ = tr(A) / n
-        A -= μ * I
-    else
-        μ = zero(float(eltype(A)))
-    end
+    A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
     degree_opt, scale = parameters(t, A, size(B, 2); tol)  # m*, s
     τ = t * one(μ) / scale
     η = exp(τ * μ)  # term for undoing shifting
