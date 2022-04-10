@@ -37,7 +37,7 @@ function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, 
     t_min = ts[begin]
     t_max = ts[end]
     t_span = t_max - t_min
-    Δt = step(ts)
+    Δt = (t_max - t_min) / num_steps
 
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
 
