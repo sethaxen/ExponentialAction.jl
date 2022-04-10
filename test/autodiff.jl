@@ -18,21 +18,23 @@ function expv_jacobians(ba, t, A, B; kwargs...)
 end
 
 @testset "automatic differentiation" begin
-    t = rand()
-    A = randn(10, 10)
-    B = randn(10)
-    fd_backend = AD.FiniteDifferencesBackend()
-    backends = [
-        "ForwardDiff" => AD.ForwardDiffBackend(),
-        "ReverseDiff" => AD.ReverseDiffBackend(),
-        "Zygote" => AD.ZygoteBackend(),
-    ]
-    tjac_exp, Ajac_exp, Bjac_exp = expv_jacobians(fd_backend, t, A, B)
+    @testset "expv" begin
+        t = rand()
+        A = randn(10, 10)
+        B = randn(10)
+        fd_backend = AD.FiniteDifferencesBackend()
+        backends = [
+            "ForwardDiff" => AD.ForwardDiffBackend(),
+            "ReverseDiff" => AD.ReverseDiffBackend(),
+            "Zygote" => AD.ZygoteBackend(),
+        ]
+        tjac_exp, Ajac_exp, Bjac_exp = expv_jacobians(fd_backend, t, A, B)
 
-    @testset "$ba_name" for (ba_name, ba) in backends, shift in (true, false)
-        tjac, Ajac, Bjac = expv_jacobians(ba, t, A, B; shift)
-        @test tjac ≈ tjac_exp
-        @test Ajac ≈ Ajac_exp
-        @test Bjac ≈ Bjac_exp
+        @testset "$ba_name" for (ba_name, ba) in backends, shift in (true, false)
+            tjac, Ajac, Bjac = expv_jacobians(ba, t, A, B; shift)
+            @test tjac ≈ tjac_exp
+            @test Ajac ≈ Ajac_exp
+            @test Bjac ≈ Bjac_exp
+        end
     end
 end
