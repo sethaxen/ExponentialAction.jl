@@ -25,11 +25,16 @@ and is described in Algorithm 5.2 of [^AlMohyHigham2011].
 """
 function expv_sequence(ts, A, B; shift=true, tol=default_tol(ts, A, B))
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
-    Fs_ts = accumulate(ts; init=(B, zero(ts[begin]))) do (F, t_old), t
+    t = t_old = ts[begin]
+    F = expv(t, A, B; shift, tol) * exp(μ * t)
+    Fs = [F]
+    for t in ts[(begin + 1):end]
         Δt = t - t_old
-        return expv(Δt, A, F; shift=false, tol) * exp(μ * Δt), t
+        F = expv(Δt, A, F; shift, tol) * exp(μ * Δt)
+        Fs = vcat(Fs, [F])  # avoid mutation
+        t_old = t
     end
-    return first.(Fs_ts)
+    return Fs
 end
 function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, A, B))
     ncols_B = size(B, 2)
@@ -45,33 +50,42 @@ function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, 
 
     F1 = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
 
+    if num_steps == 0
+        return [F1]
     elseif num_steps ≤ scale
         return vcat([F1], _expv_sequence_core1(Δt, A, F1, degree_opt, μ, num_steps, tol))
+    else
+        num_steps_per_scale = fld(num_steps, scale)  # d
+        scale_actual, num_steps_last = fldmod(num_steps, num_steps_per_scale)  # (j, r)
+        Fs = [F1]
+        for i in 1:(scale_actual + 1)
+            d = i > scale_actual ? num_steps_last : num_steps_per_scale
+            d == 0 && continue
+            Fs = vcat(Fs, _expv_sequence_core2(Δt, A, Fs[end], degree_opt, μ, d, tol))
+        end
+        return Fs
     end
-
-    num_steps_per_scale = fld(num_steps, scale)  # d
-    scale_actual, num_steps_last = fldmod(num_steps, num_steps_per_scale)  # (j, r)
-
-    Fs = reduce(1:(scale_actual + 1); init=[F1]) do Fs, i
-        d = i > scale_actual ? num_steps_last : num_steps_per_scale
-        return vcat(Fs, _expv_sequence_core2(Δt, A, Fs[end], degree_opt, μ, d, tol))
-    end
-    return Fs
 end
 
 function _expv_sequence_core1(Δt, A, B, degree_opt, μ, num_steps, tol)
     η = exp(Δt * μ)
-    return accumulate(1:num_steps; init=B) do F, _
-        return expv_taylor(Δt, A, F, degree_opt; tol) * η
+    F = expv_taylor(Δt, A, B, degree_opt; tol) * η
+    Fs = [F]
+    for _ in 2:num_steps
+        F = expv_taylor(Δt, A, F, degree_opt; tol) * η
+        Fs = vcat(Fs, [F])  # avoid mutation
     end
+    return Fs
 end
 
 function _expv_sequence_core2(Δt, A, B, degree_opt, μ, num_steps, tol)
-    init = B, [B]
-    Fs_Zs = accumulate(1:num_steps; init) do (_, Zs), k
-        F, Zs_new = expv_taylor_cache(Δt, A, B, degree_opt, k, Zs; tol)
+    F1, Zs = expv_taylor_cache(Δt, A, B, degree_opt, 1, [B]; tol)
+    F1 *= exp(μ * Δt)
+    Fs = [F1]
+    for k in 2:num_steps
+        F, Zs = expv_taylor_cache(Δt, A, B, degree_opt, k, Zs; tol)
         F *= exp(μ * k * Δt)
-        return (F, Zs_new)
+        Fs = vcat(Fs, [F])  # avoid mutation
     end
-    return first.(Fs_Zs)
+    return Fs
 end
