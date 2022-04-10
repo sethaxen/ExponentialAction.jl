@@ -84,3 +84,26 @@ function expv_taylor(t, A, B, degree_max; tol=default_tol(t, A, B))
     end
     return F
 end
+
+function expv_taylor_cache(t, A, B, degree_max, k, Zs; tol=default_tol(t, A, B))
+    F = Z = B
+    norm_tail_old = _opnormInf(Z)
+    kʲ = float(one(k))
+    cache_size = length(Zs)
+    for j in 1:degree_max
+        kʲ *= k
+        if cache_size < j + 1
+            Z = (A * Z) * (t / j)  # (t A)ʲ/j! * B
+            Zs = vcat(Zs, [Z])
+        else
+            Z = Zs[j + 1]
+        end
+        F = muladd(kʲ, Z, F)
+        # check if ratio of norm of tail and norm of series is below tolerance
+        norm_tail = kʲ * _opnormInf(Z)
+        norm_tail_tot = norm_tail_old + norm_tail
+        norm_tail_tot ≤ tol * _opnormInf(F) && break
+        norm_tail_old = norm_tail
+    end
+    return F, Zs
+end
