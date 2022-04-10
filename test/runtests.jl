@@ -6,6 +6,7 @@ Random.seed!(1)  # set seed used for all testsets
 
 @testset "ExponentialAction.jl" begin
     include("util.jl")
+    include("taylor.jl")
     include("expv.jl")
     include("expv_autodiff.jl")
 end
