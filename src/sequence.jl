@@ -30,7 +30,7 @@ function expv_sequence(ts, A, B; shift=true, tol=default_tol(ts, A, B))
     Fs = [F]
     for t in ts[(begin + 1):end]
         Δt = t - t_old
-        F = expv(Δt, A, F; shift, tol) * exp(μ * Δt)
+        F = expv(Δt, A, F; shift=false, tol) * exp(μ * Δt)
         Fs = vcat(Fs, [F])  # avoid mutation
         t_old = t
     end
