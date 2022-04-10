@@ -37,6 +37,7 @@ expv_sequence_explicit(ts, A, B; kwargs...) = map(t -> exp(t * A) * B, ts)
         A = randn(5, 5)
         B = randn(5, 2)
         @test expv_sequence([t], A, B) ≈ [expv(t, A, B)]
+        @test expv_sequence(t:1:t, A, B) ≈ [expv(t, A, B)]
     end
 
     @testset "ts all identical" begin
