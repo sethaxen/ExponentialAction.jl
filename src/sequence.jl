@@ -48,44 +48,51 @@ function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, 
 
     degree_opt, scale = parameters(t_span, A, ncols_B; tol)  # (m*, s)
 
-    F1 = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
+    F = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
 
     if num_steps == 0
-        return [F1]
+        return [F]
     elseif num_steps ≤ scale
-        return vcat([F1], _expv_sequence_core1(Δt, A, F1, degree_opt, μ, num_steps, tol))
+        _, Fs_tail = _expv_sequence_core(Δt, A, F, degree_opt, μ, num_steps, tol)
+        return vcat([F], Fs_tail)
     else
         num_steps_per_scale = fld(num_steps, scale)  # d
         scale_actual, num_steps_last = fldmod(num_steps, num_steps_per_scale)  # (j, r)
-        Fs = [F1]
-        for i in 1:(scale_actual + 1)
-            d = i > scale_actual ? num_steps_last : num_steps_per_scale
-            d == 0 && continue
-            Fs = vcat(Fs, _expv_sequence_core2(Δt, A, Fs[end], degree_opt, μ, d, tol))
+        Fs = [F]
+        for i in 1:scale_actual
+            num_steps_per_scale == 0 && continue
+            F, Fs_tail = _expv_sequence_core_cache(
+                Δt, A, F, degree_opt, μ, num_steps_per_scale, tol
+            )
+            Fs = vcat(Fs, Fs_tail)
         end
-        return Fs
+        num_steps_last == 0 && return Fs
+        _, Fs_tail = _expv_sequence_core_cache(Δt, A, F, degree_opt, μ, num_steps_last, tol)
+        return vcat(Fs, Fs_tail)
     end
 end
 
-function _expv_sequence_core1(Δt, A, B, degree_opt, μ, num_steps, tol)
+# like _expv_core, but returns the entire sequence of F matrices
+function _expv_sequence_core(Δt, A, B, degree_opt, μ, num_steps, tol)
     η = exp(Δt * μ)
     F = expv_taylor(Δt, A, B, degree_opt; tol) * η
     Fs = [F]
     for _ in 2:num_steps
-        F = expv_taylor(Δt, A, F, degree_opt; tol) * η
+        F = expv_taylor(Δt, A, F, degree_opt; tol) * η  # new starting matrix
         Fs = vcat(Fs, [F])  # avoid mutation
     end
-    return Fs
+    return F, Fs
 end
 
-function _expv_sequence_core2(Δt, A, B, degree_opt, μ, num_steps, tol)
+# like _expv_sequence_core, but all steps are relative to B, so we can cache matrix products
+function _expv_sequence_core_cache(Δt, A, B, degree_opt, μ, num_steps, tol)
     F1, Zs = expv_taylor_cache(Δt, A, B, degree_opt, 1, [B]; tol)
-    F1 *= exp(μ * Δt)
+    F = F1 *= exp(μ * Δt)
     Fs = [F1]
     for k in 2:num_steps
         F, Zs = expv_taylor_cache(Δt, A, B, degree_opt, k, Zs; tol)
         F *= exp(μ * k * Δt)
         Fs = vcat(Fs, [F])  # avoid mutation
     end
-    return Fs
+    return F, Fs
 end
