@@ -23,64 +23,55 @@ Compute `expv` over the uniformly spaced sequence.
 This algorithm takes special care to avoid overscaling and to save and reuse matrix products
 and is described in Algorithm 5.2 of [^AlMohyHigham2011].
 """
-function expv_sequence(ts, A, B; kwargs...)
-    F = B
-    t_old = zero(ts[begin])
-    Fs = map(ts) do t
-        F = expv(t - t_old, A, F; kwargs...)
-        t_old = t
-        return F
+function expv_sequence(ts, A, B; shift=true, tol=default_tol(ts, A, B))
+    A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
+    Fs_ts = accumulate(ts; init=(B, zero(ts[begin]))) do (F, t_old), t
+        Δt = t - t_old
+        return expv(Δt, A, F; shift=false, tol) * exp(μ * Δt), t
     end
-    return Fs
+    return first.(Fs_ts)
 end
 function expv_sequence(ts::AbstractRange, A, B; shift=true, tol=default_tol(ts, A, B))
-    n = LinearAlgebra.checksquare(A)
     ncols_B = size(B, 2)
     num_steps = length(ts) - 1  # q
-    t_min, t_max = extrema(ts)
+    t_min = ts[begin]
+    t_max = ts[end]
     t_span = t_max - t_min
     Δt = step(ts)
 
-    if shift
-        μ = tr(A) / n
-        A -= μ * I
-    else
-        μ = zero(float(eltype(A)))
-    end
+    A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
 
     degree_opt, scale = parameters(t_span, A, ncols_B; tol)  # (m*, s)
 
-    F = F1 = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
+    F1 = expv(t_min, A, B; shift=false, tol) * exp(μ * t_min)
 
     if num_steps <= scale
-        η = exp(Δt * μ)
-        Fs_tail = map(1:num_steps) do k
-            F = expv_taylor(k * Δt, A, F, degree_opt; tol) * η
-            return F
-        end
-        Fs = vcat([F1], Fs_tail)
-        return Fs
+        return vcat([F1], _expv_sequence_core1(Δt, A, F1, degree_opt, μ, num_steps, tol))
     end
 
     num_steps_per_scale = fld(num_steps, scale)  # d
     scale_actual, num_steps_last = fldmod(num_steps, num_steps_per_scale)  # (j, r)
 
-    Z = F
-    l = 1
-    Fs_tails = map(1:(scale_actual + 1)) do i
-        if i > scale_actual
-            num_steps_per_scale = num_steps_last
-        end
-        Zs = [Z]  # cache of matrix products
-        Fs_tail = map(1:num_steps_per_scale) do k
-            η = exp(μ * k * Δt)
-            F, Zs = expv_taylor_cache(Δt, A, Z, degree_opt, k, Zs; tol)
-            F *= η
-            return F
-        end
-        Z = F
-        return Fs_tail
+    Fs = reduce(1:(scale_actual + 1); init=[F1]) do Fs, i
+        d = i > scale_actual ? num_steps_last : num_steps_per_scale
+        return vcat(Fs, _expv_sequence_core2(Δt, A, Fs[end], degree_opt, μ, d, tol))
     end
-    Fs = reduce(vcat, [[F1], Fs_tails...])
     return Fs
+end
+
+function _expv_sequence_core1(Δt, A, B, degree_opt, μ, num_steps, tol)
+    η = exp(Δt * μ)
+    return accumulate(1:num_steps; init=B) do F, _
+        return expv_taylor(Δt, A, F, degree_opt; tol) * η
+    end
+end
+
+function _expv_sequence_core2(Δt, A, B, degree_opt, μ, num_steps, tol)
+    init = B, [B]
+    Fs_Zs = accumulate(1:num_steps; init) do (_, Zs), k
+        F, Zs_new = expv_taylor_cache(Δt, A, B, degree_opt, k, Zs; tol)
+        F *= exp(μ * k * Δt)
+        return (F, Zs_new)
+    end
+    return first.(Fs_Zs)
 end
