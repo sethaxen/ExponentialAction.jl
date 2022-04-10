@@ -18,6 +18,7 @@ using AbstractDifferentiation: AD
 include("util.jl")
 include("coefficients.jl")
 include("parameters.jl")
+include("taylor.jl")
 include("expv.jl")
 include("sequence.jl")
 
