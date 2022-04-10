@@ -3,51 +3,36 @@ using FiniteDifferences
 using ForwardDiff
 using ReverseDiff
 using Zygote
+using Test
+using AbstractDifferentiation: AD
 
-@testset "expv automatic differentiation" begin
-    @testset "ForwardDiff" begin
-        t = rand()
-        A = randn(10, 10)
-        B = randn(10)
-        tjac_fd, Ajac_fd, Bjac_fd = FiniteDifferences.jacobian(
-            central_fdm(5, 1), expv, t, A, B
-        )
-        tjac_ad = ForwardDiff.derivative(t -> expv(t, A, B), t)
-        @test tjac_ad ≈ tjac_fd
-        Ajac_ad = ForwardDiff.jacobian(A -> expv(t, A, B), A)
-        @test Ajac_fd ≈ Ajac_fd
-        Bjac_ad = ForwardDiff.jacobian(B -> expv(t, A, B), B)
-        @test Bjac_fd ≈ Bjac_fd
-    end
+# function _expv_sequence_range(t_min, t_max, n, A, B; kwargs...)
+# end
 
-    @testset "ReverseDiff" begin
-        t = rand()
-        A = randn(10, 10)
-        B = randn(10)
-        tjac_fd, Ajac_fd, Bjac_fd = FiniteDifferences.jacobian(
-            central_fdm(5, 1), expv, t, A, B
-        )
-        tjac_ad = vec(ReverseDiff.jacobian(t -> expv(first(t), A, B), [t]))
-        @test tjac_ad ≈ tjac_fd
-        Ajac_ad = ReverseDiff.jacobian(A -> expv(t, A, B), A)
-        @test Ajac_fd ≈ Ajac_fd
-        Bjac_ad = ReverseDiff.jacobian(B -> expv(t, A, B), B)
-        @test Bjac_fd ≈ Bjac_fd
-    end
+function expv_jacobians(ba, t, A, B; kwargs...)
+    n = size(A, 2)
+    tjac = AD.jacobian(fd_backend, tvec -> expv(tvec[1], A, B; kwargs...), [t])
+    Ajac = AD.jacobian(fd_backend, Avec -> expv(t, reshape(Avec, n, n), B; kwargs...), vec(A))
+    Bjac = AD.jacobian(fd_backend, B -> expv(t, A, B; kwargs...), B)
+    return only.((tjac, Ajac, Bjac))
+end
 
-    @testset "Zygote" begin
-        @testset for T in (Float64, ComplexF64)
-            t = rand(T)
-            A = randn(T, 10, 10)
-            B = randn(T, 10)
-            Ȳ = randn(T, 10)
-            t̄_fd, Ā_fd, B̄_fd = j′vp(central_fdm(5, 1), expv, Ȳ, t, A, B)
-            Y, back = Zygote.pullback(expv, t, A, B)
-            @test Y ≈ expv(t, A, B)
-            t̄_ad, Ā_ad, B̄_ad = back(Ȳ)
-            @test t̄_ad ≈ t̄_fd
-            @test Ā_ad ≈ Ā_fd
-            @test B̄_ad ≈ B̄_fd
-        end
+@testset "automatic differentiation" begin
+    t = rand()
+    A = randn(10, 10)
+    B = randn(10)
+    fd_backend = AD.FiniteDifferencesBackend()
+    backends = [
+        "ForwardDiff" => AD.ForwardDiffBackend(),
+        "ReverseDiff" => AD.ReverseDiffBackend(),
+        "Zygote" => AD.ZygoteBackend(),
+    ]
+    tjac_exp, Ajac_exp, Bjac_exp = expv_jacobians(fd_backend, t, A, B)
+
+    @testset "$ba_name" for (ba_name, ba) in backends, shift in (true, false)
+        tjac, Ajac, Bjac = expv_jacobians(ba, t, A, B; shift)
+        @test tjac ≈ tjac_exp
+        @test Ajac ≈ Ajac_exp
+        @test Bjac ≈ Bjac_exp
     end
 end
