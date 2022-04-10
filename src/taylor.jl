@@ -36,8 +36,8 @@ end
 Compute ``\\exp(tkA)B`` using the truncated Taylor series with degree ``m=`` `degree_max`.
 
 This method stores all matrix products in a cache `Z`, where
-``Z_p = (t A)^(p-1) / (p-1)! B``.
-This cache can be reused if ``k`` increases but ``t``, ``A``, and ``B`` are unchanged.
+``Z_p = \\frac{1}{(p-1)!} (t A)^{p-1} B``.
+This cache can be reused if ``k`` changes but ``t``, ``A``, and ``B`` are unchanged.
 
 `Z` is a vector of arrays of the same shape as `B` and is not mutated; instead the
 (possibly updated) cache is returned.

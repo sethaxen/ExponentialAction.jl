@@ -1,7 +1,7 @@
 """
-    expv_sequence(ts::AbstractVector, A, B; kwargs...)
+    expv_sequence(t::AbstractVector, A, B; kwargs...)
 
-Compute ``\\exp(t_i A)B`` for the (sorted) sequence of (real) time points ``\\{t_i\\}``.
+Compute ``\\exp(t_i A)B`` for the (sorted) sequence of (real) time points ``t=(t_1, t_2, \\ldots)``.
 
 At each time point, the result ``F_i`` is computed as
 ```math
@@ -16,9 +16,9 @@ point.
 
 See [`expv`](@ref) for a description of acceptable `kwargs`.
 
-    expv_sequence(ts::AbstractRange, A, B; kwargs...)
+    expv_sequence(t::AbstractRange, A, B; kwargs...)
 
-Compute `expv` over the uniformly spaced sequence.
+Compute [`expv`](@ref) over the uniformly spaced sequence.
 
 This algorithm takes special care to avoid overscaling and to save and reuse matrix products
 and is described in Algorithm 5.2 of [^AlMohyHigham2011].
