@@ -29,6 +29,7 @@ exp(A) * B
 expv(1, A, B)
 exp(2A) * B
 expv(2, A, B)
+expv_sequence(1:0.1:2, A, B)
 ```
 
 ## Automatic Differentiation (AD)

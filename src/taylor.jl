@@ -15,6 +15,8 @@ The series is truncated early if
 where ``\\lVert X \\rVert_1`` is the operator 1-norm of the matrix ``X``.
 This condition is only approximately checked.
 """
+function expv_taylor end
+
 function expv_taylor(t, A, B, degree_max; tol=default_tol(t, A, B))
     F = Z = B
     norm_tail_old = _opnormInf(Z)
@@ -50,6 +52,8 @@ This cache can be reused if ``k`` changes but ``t``, ``A``, and ``B`` are unchan
 
 See [`expv_taylor`](@ref).
 """
+function expv_taylor_cache end
+
 function expv_taylor_cache(t, A, B, degree_max, k, Zs; tol=default_tol(t, A, B))
     F = Z = B
     norm_tail_old = _opnormInf(Z)

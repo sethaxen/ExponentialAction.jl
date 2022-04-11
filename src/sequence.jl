@@ -1,7 +1,7 @@
 """
     expv_sequence(t::AbstractVector, A, B; kwargs...)
 
-Compute ``\\exp(t_i A)B`` for the (sorted) sequence of (real) time points ``t=(t_1, t_2, \\ldots)``.
+Compute ``\\exp(t_i A)B`` for the sequence of time points ``t=(t_1, t_2, \\ldots, t_n)``.
 
 At each time point, the result ``F_i`` is computed as
 ```math
@@ -14,6 +14,13 @@ Because the cost of computing `expv` is related to the operator 1-norm of ``t_i 
 incremental computation is more efficient than computing `expv` separately for each time
 point.
 
+!!! note
+    The time points `t` should be ordered such that the ``t_1`` is closed to 0 and so that
+    the sequence of timepoints is approximately the shortest path connecting the timepoints.
+    For real `t`, this corresponds to `sort(t; by=abs)`.
+    If `t` is ordered differently, it may be both slower and elss accurate than calling
+    `expv` once for each timepoint.
+
 See [`expv`](@ref) for a description of acceptable `kwargs`.
 
     expv_sequence(t::AbstractRange, A, B; kwargs...)
@@ -23,6 +30,8 @@ Compute [`expv`](@ref) over the uniformly spaced sequence.
 This algorithm takes special care to avoid overscaling and to save and reuse matrix products
 and is described in Algorithm 5.2 of [^AlMohyHigham2011].
 """
+function expv_sequence end
+
 function expv_sequence(ts, A, B; shift=true, tol=default_tol(ts, A, B))
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
     t = t_old = ts[begin]

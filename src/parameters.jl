@@ -27,6 +27,8 @@ This is Code Fragment 3.1 from [^AlMohyHigham2011].
   - `scale`: the amount of scaling ``s`` that will be applied to ``A``. The truncated Taylor
     series of ``\\exp(t A / s)`` will be applied ``s`` times to ``B``.
 """
+function parameters end
+
 function parameters(t, A, ncols_B; tol=default_tol(t, A), degree_max::Int=55, ℓ::Int=2)
     return _parameters(AD.primal_value(t), AD.primal_value(A), ncols_B, degree_max, ℓ, tol)
 end

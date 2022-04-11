@@ -32,6 +32,8 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
   - `tol`: The relative tolerance at which to compute the result. Defaults to the tolerance
     of the eltype of the result.
 """
+function expv end
+
 function expv(t, A, B; shift=true, tol=default_tol(t, A, B))
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
     degree_opt, scale = parameters(t, A, size(B, 2); tol)  # m*, s
