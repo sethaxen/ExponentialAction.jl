@@ -14,7 +14,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 AbstractDifferentiation = "0.4"
 ChainRulesCore = "0.9.7, 1"
 ChainRulesTestUtils = "0.7, 1"
-Compat = "3.31.1"
+Compat = "3.31.1, 4"
 julia = "1.6"
 
 [extras]
