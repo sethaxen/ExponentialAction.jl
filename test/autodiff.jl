@@ -4,7 +4,7 @@ using ForwardDiff
 using ReverseDiff
 using Zygote
 using Test
-using AbstractDifferentiation: AD
+using AbstractDifferentiation: AbstractDifferentiation as AD
 
 expv_explicit(t, A, B) = exp(t * A) * B
 
