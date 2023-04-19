@@ -22,6 +22,8 @@ include("taylor.jl")
 include("expv.jl")
 include("sequence.jl")
 
+isdefined(Base, :get_extension) || include("../ext/ExponentialActionEnzymeCoreExt.jl")
+
 export expv, expv_sequence
 
 end
