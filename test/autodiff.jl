@@ -6,10 +6,6 @@ using Zygote
 using Test
 using AbstractDifferentiation: AbstractDifferentiation as AD
 
-expv_explicit(t, A, B) = exp(t * A) * B
-
-expv_sequence_explicit(ts, A, B) = map(t -> expv_explicit(t, A, B), ts)
-
 function expv_jacobians(ba, t, A, B; f=expv, kwargs...)
     n = size(A, 2)
     tjac = only(AD.jacobian(ba, tvec -> f(tvec[1], A, B; kwargs...), [t]))

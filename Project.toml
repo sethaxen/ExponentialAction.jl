@@ -1,7 +1,7 @@
 name = "ExponentialAction"
 uuid = "e24c0720-ea99-47e8-929e-571b494574d3"
 authors = ["Seth Axen <seth.axen@gmail.com> and contributors"]
-version = "0.2.6"
+version = "0.2.7"
 
 [deps]
 AbstractDifferentiation = "c29ec348-61ec-40c8-8164-b8c60e9d9f3d"
@@ -12,14 +12,22 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 AbstractDifferentiation = "0.4, 0.5"
+Aqua = "0.8"
 ChainRulesCore = "0.9.7, 1"
 ChainRulesTestUtils = "0.7, 1"
 Compat = "3.31.1, 4"
+FiniteDifferences = "0.12"
+ForwardDiff = "0.10"
 LinearAlgebra = "1.6"
+Random = "1.6"
+ReverseDiff = "1"
 SparseArrays = "1.6"
+Test = "1.6"
+Zygote = "0.6"
 julia = "1.6"
 
 [extras]
+Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
 ChainRulesTestUtils = "cdddcdb0-9152-4a09-a978-84456f9df70a"
 FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
@@ -29,4 +37,4 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [targets]
-test = ["ChainRulesTestUtils", "FiniteDifferences", "ForwardDiff", "Random", "ReverseDiff", "Test", "Zygote"]
+test = ["Aqua", "ChainRulesTestUtils", "FiniteDifferences", "ForwardDiff", "Random", "ReverseDiff", "Test", "Zygote"]
