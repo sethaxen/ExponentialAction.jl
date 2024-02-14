@@ -2,8 +2,6 @@ using ExponentialAction, LinearAlgebra, Test
 
 Tdouble = (Float64, ComplexF64)
 
-expv_sequence_explicit(ts, A, B; kwargs...) = map(t -> exp(t * A) * B, ts)
-
 @testset "expv_sequence" begin
     n = 5
     ts_base = 1:0.1:2
