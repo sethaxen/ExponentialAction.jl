@@ -41,10 +41,11 @@ function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
     θ = coefficients(T(tol))
     p_max = p_from_degree_max(degree_max)
     if _cost_case1(tA_norm, ncols_B, degree_max, θ[degree_max]) ≤ _cost_case2(ℓ, p_max)  # (3.13) is satisfied
-        degree_opt = 0
-        num_mat_mul_opt, degree_opt = findmin(1:degree_max) do m
+        num_mat_muls = map(1:degree_max) do m
             return asint(m * cld(tA_norm, θ[m]))
         end
+        degree_opt = argmin(num_mat_muls)
+        num_mat_mul_opt = num_mat_muls[degree_opt]
         scale = cld(num_mat_mul_opt, degree_opt)
     else
         # TODO: replace powers of A here and below with opnormest(pow, A, 1)

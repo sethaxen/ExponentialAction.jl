@@ -15,8 +15,7 @@ concurrency:
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
-    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.downgrade && 'Downgrade / ' || '' }}Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -27,6 +26,13 @@ jobs:
           - ubuntu-latest
         arch:
           - x64
+        downgrade:
+          - false
+        include:
+          - version: '1'
+            arch: x64
+            os: ubuntu-latest
+            downgrade: true
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
@@ -34,6 +40,11 @@ jobs:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
       - uses: julia-actions/cache@v1
+      - uses: cjdoris/julia-downgrade-compat-action@v1
+        with:
+          skip: LinearAlgebra,Random,SparseArrays,Test
+        if: ${{ matrix.downgrade }}
+        name: Downgrade dependencies to oldest supported versions
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
