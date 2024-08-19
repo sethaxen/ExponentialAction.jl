@@ -51,7 +51,7 @@ function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
         # TODO: replace powers of A here and below with opnormest(pow, A, 1)
         # see https://github.com/JuliaLang/julia/pull/39058
         Aᵖ⁺¹ = A * A
-        d = t_norm * sqrt(opnormest1(A))
+        d = t_norm * sqrt(opnormest1(Aᵖ⁺¹))
         degree_opt = degree_max + 1
         num_mat_mul_opt = typemax(Int)
         for p in 2:p_max # Compute minimum in (3.11)
