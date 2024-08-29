@@ -23,6 +23,7 @@ jobs:
         version:
           - '1.6'
           - 1
+          - 'pre'
         os:
           - ubuntu-latest
         arch:
