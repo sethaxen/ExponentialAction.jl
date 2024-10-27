@@ -12,7 +12,6 @@ module ExponentialAction
 using LinearAlgebra
 using ChainRulesCore: ChainRulesCore
 using SparseArrays: sparse
-using Compat: findmin
 using AbstractDifferentiation: AbstractDifferentiation as AD
 
 include("util.jl")
