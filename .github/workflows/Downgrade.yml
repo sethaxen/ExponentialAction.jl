@@ -1,0 +1,30 @@
+name: Downgrade
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        version: ['1']
+        os: ['ubuntu-latest']
+    steps:
+      - uses: actions/checkout@v5
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ matrix.version }}
+      - uses: julia-actions/cache@v2
+      - uses: julia-actions/julia-downgrade-compat@v2
+        with:
+          skip: LinearAlgebra,Random,SparseArrays,Test
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
