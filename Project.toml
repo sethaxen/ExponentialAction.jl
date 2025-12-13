@@ -1,7 +1,7 @@
 name = "ExponentialAction"
 uuid = "e24c0720-ea99-47e8-929e-571b494574d3"
-authors = ["Seth Axen <seth.axen@gmail.com> and contributors"]
 version = "0.2.10"
+authors = ["Seth Axen <seth.axen@gmail.com> and contributors"]
 
 [deps]
 AbstractDifferentiation = "c29ec348-61ec-40c8-8164-b8c60e9d9f3d"
@@ -15,7 +15,7 @@ Aqua = "0.8.1"
 ChainRulesCore = "1.19.1"
 ChainRulesTestUtils = "1.0.0"
 FiniteDifferences = "0.12.17"
-ForwardDiff = "0.10.23"
+ForwardDiff = "0.10.23, 1"
 LinearAlgebra = "1.6"
 Random = "1.6"
 ReverseDiff = "1.4.5"
