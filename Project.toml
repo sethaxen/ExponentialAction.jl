@@ -11,7 +11,7 @@ SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 AbstractDifferentiation = "0.4.4, 0.5, 0.6"
-Aqua = "0.8.1"
+Aqua = "0.8.14"
 ChainRulesCore = "1.19.1"
 ChainRulesTestUtils = "1.0.0"
 FiniteDifferences = "0.12.17"
