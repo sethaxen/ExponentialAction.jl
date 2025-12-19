@@ -37,8 +37,7 @@ function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
     Anorm = opnormest1(A)
     iszero(Anorm) && return (0, 1)
     tA_norm = t_norm * Anorm
-    T = float(real(Base.promote_eltype(t, A)))
-    θ = coefficients(T(tol))
+    θ = coefficients(tol, degree_max)
     p_max = p_from_degree_max(degree_max)
     if _cost_case1(tA_norm, ncols_B, degree_max, θ[degree_max]) ≤ _cost_case2(ℓ, p_max)  # (3.13) is satisfied
         num_mat_muls = map(1:degree_max) do m

@@ -26,10 +26,10 @@ using ExponentialAction: _opnormInf
     end
 
     @testset "default_tol" begin
-        @test ExponentialAction.default_tol(randn()) ≈ eps(Float64)
-        @test ExponentialAction.default_tol(randn(ComplexF64)) ≈ eps(Float64)
-        @test ExponentialAction.default_tol(randn(Float32)) ≈ eps(Float32)
-        @test ExponentialAction.default_tol(1, randn()) ≈ eps(Float64)
+        @test ExponentialAction.default_tol(randn()) ≈ exp2(-precision(Float64))
+        @test ExponentialAction.default_tol(randn(ComplexF64)) ≈ exp2(-precision(Float64))
+        @test ExponentialAction.default_tol(randn(Float32)) ≈ exp2(-precision(Float32))
+        @test ExponentialAction.default_tol(1, randn()) ≈ exp2(-precision(Float64))
         test_rrule(ExponentialAction.default_tol, randn() ⊢ NoTangent(); atol=1e-6)
     end
 end

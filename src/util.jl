@@ -8,7 +8,10 @@ opnormest1(A) = opnorm(A, 1)
 
 asint(x) = x ≤ typemax(Int) ? Int(x) : typemax(Int)
 
-default_tol(args...) = AD.primal_value(eps(float(real(Base.promote_eltype(args...)))))
+function default_tol(args...)
+    T = float(real(Base.promote_eltype(args...)))
+    return AD.primal_value(max(eps(T) / 2, T(MINIMUM_TOLERANCE)))
+end
 
 function shift_matrix(A)
     μ = get_shift(A)

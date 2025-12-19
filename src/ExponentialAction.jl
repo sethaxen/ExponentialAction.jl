@@ -9,6 +9,8 @@ For details, see the docstring of [`expv`](@ref).
 """
 module ExponentialAction
 
+const MINIMUM_TOLERANCE = exp2(-precision(Float64))
+
 using LinearAlgebra
 using ChainRulesCore: ChainRulesCore
 using SparseArrays: sparse
