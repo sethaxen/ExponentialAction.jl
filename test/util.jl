@@ -11,8 +11,8 @@ using ExponentialAction: _opnormInf
     end
 
     @testset "_opnormInf non-differentiable" begin
-        test_rrule(_opnormInf, randn(ComplexF64, 10) ⊢ NoTangent(); atol=1e-6)
-        test_rrule(_opnormInf, randn(ComplexF64, 10, 10) ⊢ NoTangent(); atol=1e-6)
+        test_rrule(_opnormInf, randn(ComplexF64, 10) ⊢ NoTangent(); atol = 1.0e-6)
+        test_rrule(_opnormInf, randn(ComplexF64, 10, 10) ⊢ NoTangent(); atol = 1.0e-6)
     end
 
     @testset "opnormest1" begin
@@ -30,6 +30,6 @@ using ExponentialAction: _opnormInf
         @test ExponentialAction.default_tol(randn(ComplexF64)) ≈ eps(Float64)
         @test ExponentialAction.default_tol(randn(Float32)) ≈ eps(Float32)
         @test ExponentialAction.default_tol(1, randn()) ≈ eps(Float64)
-        test_rrule(ExponentialAction.default_tol, randn() ⊢ NoTangent(); atol=1e-6)
+        test_rrule(ExponentialAction.default_tol, randn() ⊢ NoTangent(); atol = 1.0e-6)
     end
 end

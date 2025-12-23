@@ -2,7 +2,7 @@
 # licensed under BSD 2-clause
 # Copyright (c) 2010, Awad H. Al-Mohy and Nicholas J. Higham
 # All rights reserved.
-function coefficients(tol::T) where {T<:Real}
+function coefficients(tol::T) where {T <: Real}
     if tol ≥ 2^(-24)
         θ = T[
             1.1920927998154304e-7,
