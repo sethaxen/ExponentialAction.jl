@@ -5,15 +5,15 @@ Tdouble = (Float64, ComplexF64)
 @testset "expv_sequence" begin
     n = 5
     ts_base = 1:0.1:2
-    @testset "expv_sequence(ts, A::$Matrix{$TA}, B::Array{$TB,$(length(Bdims2)+1)}), tscale=$tscale, shift=$shift" for Tset in
-                                                                                                                       (
-            Tdouble,
-        ),
-        Bdims2 in ((), (4,)),
-        TA in Tset,
-        TB in Tset,
-        tscale in (0.1, 1, 50),
-        shift in (true, false)
+    @testset "expv_sequence(ts, A::$Matrix{$TA}, B::Array{$TB,$(length(Bdims2) + 1)}), tscale=$tscale, shift=$shift" for Tset in
+            (
+                Tdouble,
+            ),
+            Bdims2 in ((), (4,)),
+            TA in Tset,
+            TB in Tset,
+            tscale in (0.1, 1, 50),
+            shift in (true, false)
 
         ts = tscale * ts_base
         A = randn(TA, n, n)

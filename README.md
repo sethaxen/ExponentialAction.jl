@@ -5,7 +5,6 @@
 [![Build Status](https://github.com/sethaxen/ExponentialAction.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/sethaxen/ExponentialAction.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 [![Coverage](https://codecov.io/gh/sethaxen/ExponentialAction.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/sethaxen/ExponentialAction.jl)
-[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 [![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
 
 ExponentialAction is a lightweight package that implements the action of the [Matrix exponential](https://en.wikipedia.org/wiki/Matrix_exponential) using the algorithm of Al-Mohy and Higham [^AlMohyHigham2011][^Expmv].

@@ -1,0 +1,39 @@
+name: Code checks
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+jobs:
+  pre-commit:
+    name: Run pre-commit checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pre-commit/action@v3.0.1
+        env:
+          # Runic checks are run below
+          SKIP: runic
+
+  runic:
+    name: Runic formatting
+    runs-on: ubuntu-latest
+    # Permissions needed for reviewdog/action-suggester to post comments
+    permissions:
+      contents: read
+      checks: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: fredrikekre/runic-action@v1
+        with:
+          version: '1' # Sychronize with .pre-commit-config.yaml
+          format_files: true
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
+      - uses: reviewdog/action-suggester@v1
+        if: github.event_name == 'pull_request'
+        with:
+          tool_name: Runic
+          fail_level: warning

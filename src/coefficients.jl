@@ -169,7 +169,7 @@ const FLOAT64_COEFFICIENTS = Float64[
     22.128357353464594,
 ]
 
-function coefficients(tol::T, m_max::Int) where {T<:Real}
+function coefficients(tol::T, m_max::Int) where {T <: Real}
     if 2 * tol ≥ eps(Float32)
         return convert(Vector{T}, view(FLOAT32_COEFFICIENTS, 1:m_max))
     elseif 2 * tol ≥ eps(Float64)
