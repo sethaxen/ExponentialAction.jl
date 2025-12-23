@@ -15,4 +15,4 @@ repos:
     hooks:
       - id: runic
         additional_dependencies:
-          - 'Runic@1  # synchronize with .github/workflows/Checks.yml
+          - 'Runic@1'  # synchronize with .github/workflows/Checks.yml
