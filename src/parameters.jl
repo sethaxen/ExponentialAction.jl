@@ -27,7 +27,7 @@ This is Code Fragment 3.1 from [^AlMohyHigham2011].
   - `scale`: the amount of scaling ``s`` that will be applied to ``A``. The truncated Taylor
     series of ``\\exp(t A / s)`` will be applied ``s`` times to ``B``.
 """
-function parameters(t, A, ncols_B; tol=default_tol(t, A), degree_max::Int=55, ℓ::Int=2)
+function parameters(t, A, ncols_B; tol = default_tol(t, A), degree_max::Int = 55, ℓ::Int = 2)
     return _parameters(AD.primal_value(t), AD.primal_value(A), ncols_B, degree_max, ℓ, tol)
 end
 
@@ -57,13 +57,13 @@ function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
         for p in 2:p_max # Compute minimum in (3.11)
             Aᵖ⁺¹ *= A
             # (3.7)
-            d, d_old = t_norm * opnormest1(Aᵖ⁺¹)^(1//(p + 1)), d
+            d, d_old = t_norm * opnormest1(Aᵖ⁺¹)^(1 // (p + 1)), d
             α = max(d, d_old)
             degree_min = p * (p - 1) - 1
             for degree in degree_min:degree_max
                 num_mat_mul = asint(degree * cld(α, θ[degree]))
                 if num_mat_mul < num_mat_mul_opt ||
-                    (num_mat_mul == num_mat_mul_opt && degree < degree_opt)
+                        (num_mat_mul == num_mat_mul_opt && degree < degree_opt)
                     degree_opt = degree
                     num_mat_mul_opt = num_mat_mul
                 end
@@ -75,7 +75,7 @@ function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
 end
 # work around opnorm(A, 1) and (A^2)*A having very slow defaults for these arrays
 # https://github.com/sethaxen/ExponentialAction.jl/issues/3
-function _parameters(t, A::Union{Bidiagonal,Tridiagonal}, ncols_B, degree_max, ℓ, tol)
+function _parameters(t, A::Union{Bidiagonal, Tridiagonal}, ncols_B, degree_max, ℓ, tol)
     return _parameters(t, sparse(A), ncols_B, degree_max, ℓ, tol)
 end
 

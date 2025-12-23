@@ -47,4 +47,3 @@ If efficiency is important, we recommend choosing from the packages by benchmark
     The packages use different default tolerances.
     `ExponentialAction.jl` is more strict.
     For a fair comparison, select similar tolerances.
-
