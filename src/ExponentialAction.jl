@@ -11,6 +11,7 @@ module ExponentialAction
 
 using LinearAlgebra
 using ChainRulesCore: ChainRulesCore
+using Random: Random
 using SparseArrays: sparse
 using AbstractDifferentiation: AbstractDifferentiation as AD
 

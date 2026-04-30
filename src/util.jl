@@ -15,6 +15,28 @@ function shift_matrix(A)
     return (A - μ * I), μ
 end
 
+function _col_normalize!(x)
+    foreach(LinearAlgebra.normalize!, eachcol(x))
+    return x
+end
+
+function _rand_sphere!(rng, x)
+    Random.randn!(rng, x)
+    _col_normalize!(x)
+    return x
+end
+
+function _rand_signs!(rng::Random.AbstractRNG, x::AbstractArray{<:Real})
+    Random.rand!(rng, x)
+    x .= 2 .* (x .> 0.5) .- 1
+    return x
+end
+function _rand_signs!(rng::Random.AbstractRNG, x::AbstractArray{T}) where {T <: Complex}
+    Random.randn!(rng, x)
+    x .= ifelse.(iszero.(x), oneunit(T), sign.(x))
+    return x
+end
+
 get_shift(A) = AD.primal_value(tr(A)) / LinearAlgebra.checksquare(A)
 
 # we only use these for control flow, so avoid differentiating through them
