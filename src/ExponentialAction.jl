@@ -15,6 +15,7 @@ using SparseArrays: sparse
 using AbstractDifferentiation: AbstractDifferentiation as AD
 
 include("util.jl")
+include("linear_operators.jl")
 include("coefficients.jl")
 include("parameters.jl")
 include("taylor.jl")
