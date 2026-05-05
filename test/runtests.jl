@@ -8,6 +8,7 @@ Random.seed!(1)  # set seed used for all testsets
     include("aqua.jl")
     include("helpers.jl")
     include("util.jl")
+    include("opnorm_est.jl")
     include("taylor.jl")
     include("expv.jl")
     include("sequence.jl")

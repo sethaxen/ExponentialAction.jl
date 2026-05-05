@@ -9,6 +9,7 @@ For details, see the docstring of [`expv`](@ref).
 """
 module ExponentialAction
 
+using ArrayInterface: ArrayInterface
 using LinearAlgebra
 using ChainRulesCore: ChainRulesCore
 using Random: Random
@@ -18,6 +19,7 @@ using DocStringExtensions: TYPEDEF, TYPEDFIELDS
 
 include("util.jl")
 include("linear_operators.jl")
+include("opnorm_est.jl")
 include("coefficients.jl")
 include("parameters.jl")
 include("taylor.jl")
