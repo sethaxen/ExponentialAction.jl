@@ -14,6 +14,7 @@ using ChainRulesCore: ChainRulesCore
 using Random: Random
 using SparseArrays: sparse
 using AbstractDifferentiation: AbstractDifferentiation as AD
+using DocStringExtensions: TYPEDEF, TYPEDFIELDS
 
 include("util.jl")
 include("linear_operators.jl")
