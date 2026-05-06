@@ -73,7 +73,10 @@ end
                     @test size(cache.row_abs_sum) == (n,)
                     @test cache.ind isa Vector{Int}
                     @test size(cache.ind) == (n,)
-                    @test cache.ind_hist isa Set{Int}
+                    @test cache.seen isa Vector{Bool}
+                    @test size(cache.seen) == (n,)
+                    @test cache.ind_rank isa Vector{Int}
+                    @test size(cache.ind_rank) == (n,)
                 end
             end
         end

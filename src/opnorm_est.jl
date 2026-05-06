@@ -52,7 +52,7 @@ num_matvecs(method::HighamTisseurOpNorm1) = 4 * method.ncols
 
 default_opnorm_method(t, A, B) = HighamTisseurOpNorm1(; prototype = B)
 
-struct HighamTisseurOpNorm1Cache{T, Tr, C, R, I}
+struct HighamTisseurOpNorm1Cache{T, Tr, C, R, I, S, K}
     "Test matrix to apply the operator to."
     X::Tr
     "Result of applying the operator to `X`."
@@ -65,8 +65,10 @@ struct HighamTisseurOpNorm1Cache{T, Tr, C, R, I}
     row_abs_sum::R
     "Permutation of indices of `row_abs_sum`."
     ind::I
-    "History of indices of `ind`."
-    ind_hist::Set{Int}
+    "Mask of rows that have already appeared in `ind_prefix`."
+    seen::S
+    "Rank of each row index in the current sorted order of `ind`."
+    ind_rank::K
 end
 
 function allocate_memory(method::HighamTisseurOpNorm1, A, prototype)
@@ -86,10 +88,10 @@ function allocate_memory(method::HighamTisseurOpNorm1, A, prototype)
     col_abs_sum = similar(X, (ax_col,))
     row_abs_sum = similar(X, (ax_row,))
     ind = similar(row_abs_sum, Int)
-    ind_hist = Set{Int}()
-    sizehint!(ind_hist, maxiter * ncols)
+    seen = similar(row_abs_sum, Bool)
+    ind_rank = similar(row_abs_sum, Int)
 
-    cache = HighamTisseurOpNorm1Cache(X, Y1, Y2, col_abs_sum, row_abs_sum, ind, ind_hist)
+    cache = HighamTisseurOpNorm1Cache(X, Y1, Y2, col_abs_sum, row_abs_sum, ind, seen, ind_rank)
 
     return cache
 end
@@ -97,7 +99,7 @@ end
 function opnorm_est(rng, method::HighamTisseurOpNorm1, A, cache::HighamTisseurOpNorm1Cache)
     # destructure everything and define aliases for convenience
     (; maxiter) = method
-    (; X, Y1, Y2, col_abs_sum, row_abs_sum, ind, ind_hist) = cache
+    (; X, Y1, Y2, col_abs_sum, row_abs_sum, ind, seen, ind_rank) = cache
     Y, S_old, absY, S_dot, X_dot = Y1, Y2, X, col_abs_sum, col_abs_sum
     ncols = size(X, 2)
     row_ax = axes(X, 1)
@@ -105,7 +107,7 @@ function opnorm_est(rng, method::HighamTisseurOpNorm1, A, cache::HighamTisseurOp
     # compute the estimate
     iter = 0
     est = est_old = zero(eltype(col_abs_sum))
-    empty!(ind_hist)
+    fill!(seen, false)
     _init_starting_matrix!(rng, X, X_dot)
     idx_prefix = first(row_ax, ncols)
     ind_prefix = view(ind, idx_prefix)
@@ -143,12 +145,13 @@ function opnorm_est(rng, method::HighamTisseurOpNorm1, A, cache::HighamTisseurOp
         sortperm!(ind, row_abs_sum; rev = true)
         if ncols > 1
             # (5)
-            issubset(ind_prefix, ind_hist) && break
-            # replace first ncols entries in ind with first ncols entries not in ind_hist, if possible
-            partialsort!(ind, idx_prefix; by = ∈(ind_hist))
+            all(view(seen, ind_prefix)) && break
+            # replace first ncols entries in ind with first ncols entries not in seen, preserving order
+            ind_rank[ind] .= row_ax
+            partialsort!(ind, idx_prefix; by = i -> (seen[i], ind_rank[i]))
         end
-        copyto!(view(X, ind, :), I)
-        union!(ind_hist, ind_prefix)
+        X .= row_ax .== ind_prefix'  # GPU-friendly version of copyto!(X, I[1:n, ind_prefix])
+        seen[ind_prefix] .= true
     end
     return est
 end

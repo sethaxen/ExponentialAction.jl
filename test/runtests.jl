@@ -13,4 +13,5 @@ Random.seed!(1)  # set seed used for all testsets
     include("expv.jl")
     include("sequence.jl")
     include("autodiff.jl")
+    include("gpu.jl")
 end
