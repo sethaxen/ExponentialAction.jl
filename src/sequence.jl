@@ -37,11 +37,11 @@ function expv_sequence(ts, A, B; shift = true, kwargs...)
     return Fs
 end
 function expv_sequence(
-    ts::AbstractRange, A, B;
-    shift = true,
-    tol = default_tol(ts, A, B),
-    rng::Random.AbstractRNG = Random.default_rng(),
-)
+        ts::AbstractRange, A, B;
+        shift = true,
+        tol = default_tol(ts, A, B),
+        rng::Random.AbstractRNG = Random.default_rng(),
+    )
     num_steps = length(ts) - 1  # q
     t_min = ts[begin]
     t_max = ts[end]

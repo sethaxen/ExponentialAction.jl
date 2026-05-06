@@ -33,11 +33,11 @@ The algorithm is described in detail in Algorithm 3.2 in [^AlMohyHigham2011].
     of the eltype of the result.
 """
 function expv(
-    t, A, B;
-    shift = true,
-    tol = default_tol(t, A, B),
-    rng::Random.AbstractRNG = Random.default_rng(),
-)
+        t, A, B;
+        shift = true,
+        tol = default_tol(t, A, B),
+        rng::Random.AbstractRNG = Random.default_rng(),
+    )
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
     degree_opt, scale = parameters(t, A, B; tol, rng)  # m*, s
     F = _expv_core(t * one(μ) / scale, A, B, degree_opt, μ, scale, tol)
