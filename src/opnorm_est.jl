@@ -153,6 +153,14 @@ function opnorm_est(rng, method::HighamTisseurOpNorm1, A, cache::HighamTisseurOp
     return est
 end
 
+# NOTE: the paper describes that for complex operators, the starting matrix should be real
+# and is initialized with entries of unit norm scaled by 1/n, just like for real operators.
+# The matlab implementation of normest1 does the same.
+# However, what seems to be the reference LAPACK implementation for complex operators ZLACN1
+# (described in LAPACK working note 152 https://www.netlib.org/lapack/lawnspdf/lawn152.pdf
+# and archived from http://www.cs.man.ac.uk/~scheng/PCMF/zlacn1.tar on Jan 9, 2002) uses
+# a complex starting matrix with random *complex* entries of unit norm.
+# We use the same approach as the paper and matlab implementation.
 function _init_starting_matrix!(rng::Random.AbstractRNG, X, X_dot)
     ncols = size(X, 2)
     fill!(view(X, :, 1), 1)
