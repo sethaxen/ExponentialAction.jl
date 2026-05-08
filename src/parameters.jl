@@ -37,7 +37,7 @@ function _parameters(t, A, B, degree_max, ℓ, tol, rng)
     t_norm = abs(t)
     iszero(t_norm) && return (0, 1)
     p_max = p_from_degree_max(degree_max)
-    opnorm_pow_iter = opnormest1_pow_series(A, degree_max, B; rng)
+    opnorm_pow_iter = opnormest1_pow_series(A, p_max, B; rng)
     (_, Anorm), opnorm_pow_iter = Iterators.peel(opnorm_pow_iter)
     iszero(Anorm) && return (0, 1)
     tA_norm = t_norm * Anorm
