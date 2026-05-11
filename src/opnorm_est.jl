@@ -189,12 +189,12 @@ function _resample_parallel_cols!(rng, X, X_old, X_dot)
                 X_dot_view = view(X_dot, 1:(j - 1))
                 LinearAlgebra.mul!(X_dot_view, view(X, :, 1:(j - 1))', Xj)
                 iter += 1
-                has_parallel = !(maximum(abs, X_dot_view) < (n + 1//2))
+                has_parallel = !(maximum(abs, X_dot_view) < (n + 1 // 2))
             end
             if X_old !== nothing && !has_parallel
                 LinearAlgebra.mul!(X_dot, X_old', Xj)
                 iter += 1
-                has_parallel = !(maximum(abs, X_dot) < (n + 1//2))
+                has_parallel = !(maximum(abs, X_dot) < (n + 1 // 2))
             end
             has_parallel || break
             _rand_signs!(rng, Xj)
@@ -207,7 +207,7 @@ function _each_col_has_parallel_col!(X_dot, X, X_old)
     n = size(X, 1)
     rt = all(eachcol(X)) do Xj
         LinearAlgebra.mul!(X_dot, X_old', Xj)
-        !(maximum(abs, X_dot) < (n + 1//2))
+        !(maximum(abs, X_dot) < (n + 1 // 2))
     end
     return rt
 end
