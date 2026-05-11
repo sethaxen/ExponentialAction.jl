@@ -13,7 +13,7 @@ opnorm_est(rng, method::M, operator, cache::C) -> opnorm_est  # overwrites the c
 Where `C` is some cache type.
 `prototype` can be either `nothing` or an array such that
 `mul!(::AbstractArray, operator, prototype)` is a valid operation.
-It is used by `similar` to allocate the cache, which allows for GPU allocation of the cache.
+If provided, it is used by `similar` to allocate the cache.
 """
 abstract type OperatorNormEstimationMethod end
 
@@ -72,7 +72,7 @@ struct HighamTisseurOpNorm1Cache{T, Tr, C, R, I, S, K}
 end
 
 function allocate_memory(method::HighamTisseurOpNorm1, A, prototype)
-    (; ncols, maxiter) = method
+    (; ncols) = method
     n = size(A, 2)
     ncols = min(n, ncols)
 
@@ -189,12 +189,12 @@ function _resample_parallel_cols!(rng, X, X_old, X_dot)
                 X_dot_view = view(X_dot, 1:(j - 1))
                 LinearAlgebra.mul!(X_dot_view, view(X, :, 1:(j - 1))', Xj)
                 iter += 1
-                has_parallel = round(Int, maximum(abs, X_dot_view)) == n
+                has_parallel = !(maximum(abs, X_dot_view) < (n + 1//2))
             end
             if X_old !== nothing && !has_parallel
                 LinearAlgebra.mul!(X_dot, X_old', Xj)
                 iter += 1
-                has_parallel = round(Int, maximum(abs, X_dot)) == n
+                has_parallel = !(maximum(abs, X_dot) < (n + 1//2))
             end
             has_parallel || break
             _rand_signs!(rng, Xj)
@@ -207,7 +207,7 @@ function _each_col_has_parallel_col!(X_dot, X, X_old)
     n = size(X, 1)
     rt = all(eachcol(X)) do Xj
         LinearAlgebra.mul!(X_dot, X_old', Xj)
-        round(Int, maximum(abs, X_dot)) == n
+        !(maximum(abs, X_dot) < (n + 1//2))
     end
     return rt
 end
