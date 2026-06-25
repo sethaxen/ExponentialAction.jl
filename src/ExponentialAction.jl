@@ -9,12 +9,19 @@ For details, see the docstring of [`expv`](@ref).
 """
 module ExponentialAction
 
+using ArrayInterface: ArrayInterface
 using LinearAlgebra
 using ChainRulesCore: ChainRulesCore
+using Random: Random
 using SparseArrays: sparse
+using Statistics: Statistics
 using AbstractDifferentiation: AbstractDifferentiation as AD
+using DocStringExtensions: TYPEDEF, TYPEDFIELDS
 
 include("util.jl")
+include("linear_operators.jl")
+include("opnorm_est.jl")
+include("trace_est.jl")
 include("coefficients.jl")
 include("parameters.jl")
 include("taylor.jl")

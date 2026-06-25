@@ -3,3 +3,7 @@
 *.jl.mem
 /Manifest.toml
 /docs/build/
+
+# All directories beginning with a dot (except .github/)
+.*/
+!.github/

@@ -23,21 +23,25 @@ Compute [`expv`](@ref) over the uniformly spaced sequence.
 This algorithm takes special care to avoid overscaling and to save and reuse matrix products
 and is described in Algorithm 5.2 of [^AlMohyHigham2011].
 """
-function expv_sequence(ts, A, B; shift = true, tol = default_tol(ts, A, B))
+function expv_sequence(ts, A, B; shift = true, kwargs...)
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
     t = t_old = ts[begin]
-    F = expv(t, A, B; shift, tol) * exp(μ * t)
+    F = expv(t, A, B; shift, kwargs...) * exp(μ * t)
     Fs = [F]
     for t in ts[(begin + 1):end]
         Δt = t - t_old
-        F = expv(Δt, A, F; shift = false, tol) * exp(μ * Δt)
+        F = expv(Δt, A, F; shift = false, kwargs...) * exp(μ * Δt)
         Fs = vcat(Fs, [F])  # avoid mutation
         t_old = t
     end
     return Fs
 end
-function expv_sequence(ts::AbstractRange, A, B; shift = true, tol = default_tol(ts, A, B))
-    ncols_B = size(B, 2)
+function expv_sequence(
+        ts::AbstractRange, A, B;
+        shift = true,
+        tol = default_tol(ts, A, B),
+        rng::Random.AbstractRNG = Random.default_rng(),
+    )
     num_steps = length(ts) - 1  # q
     t_min = ts[begin]
     t_max = ts[end]
@@ -46,9 +50,9 @@ function expv_sequence(ts::AbstractRange, A, B; shift = true, tol = default_tol(
 
     A, μ = shift ? shift_matrix(A) : (A, zero(float(eltype(A))))
 
-    degree_opt, scale = parameters(t_span, A, ncols_B; tol)  # (m*, s)
+    degree_opt, scale = parameters(t_span, A, B; tol, rng)  # (m*, s)
 
-    F = expv(t_min, A, B; shift = false, tol) * exp(μ * t_min)
+    F = expv(t_min, A, B; shift = false, tol, rng) * exp(μ * t_min)
 
     if num_steps == 0
         return [F]
