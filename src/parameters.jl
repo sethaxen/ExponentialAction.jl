@@ -27,19 +27,22 @@ This is Code Fragment 3.1 from [^AlMohyHigham2011].
   - `scale`: the amount of scaling ``s`` that will be applied to ``A``. The truncated Taylor
     series of ``\\exp(t A / s)`` will be applied ``s`` times to ``B``.
 """
-function parameters(t, A, ncols_B; tol = default_tol(t, A), degree_max::Int = 55, ℓ::Int = 2)
-    return _parameters(AD.primal_value(t), AD.primal_value(A), ncols_B, degree_max, ℓ, tol)
+function parameters(t, A, B; tol = default_tol(t, A), degree_max::Int = 55, ℓ::Int = 2, rng::Random.AbstractRNG = Random.default_rng())
+    degree_max = max(2, degree_max)
+    return _parameters(AD.primal_value(t), AD.primal_value(A), AD.primal_value(B), degree_max, ℓ, tol, rng)
 end
 
-function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
+function _parameters(t, A, B, degree_max, ℓ, tol, rng)
+    ncols_B = size(B, 2)
     t_norm = abs(t)
     iszero(t_norm) && return (0, 1)
-    Anorm = opnormest1(A)
+    p_max = p_from_degree_max(degree_max)
+    opnorm_pow_iter = opnormest1_pow_series(A, p_max, B; rng)
+    (_, Anorm), opnorm_pow_iter = Iterators.peel(opnorm_pow_iter)
     iszero(Anorm) && return (0, 1)
     tA_norm = t_norm * Anorm
     T = float(real(Base.promote_eltype(t, A)))
     θ = coefficients(T(tol))
-    p_max = p_from_degree_max(degree_max)
     if _cost_case1(tA_norm, ncols_B, degree_max, θ[degree_max]) ≤ _cost_case2(ℓ, p_max)  # (3.13) is satisfied
         num_mat_muls = map(1:degree_max) do m
             return asint(m * cld(tA_norm, θ[m]))
@@ -50,16 +53,15 @@ function _parameters(t, A, ncols_B, degree_max, ℓ, tol)
     else
         # TODO: replace powers of A here and below with opnormest(pow, A, 1)
         # see https://github.com/JuliaLang/julia/pull/39058
-        Aᵖ⁺¹ = A * A
-        d = t_norm * sqrt(opnormest1(Aᵖ⁺¹))
+        (_, Ap_norm), opnorm_pow_iter = Iterators.peel(opnorm_pow_iter)
+        d = t_norm * Ap_norm
         degree_opt = degree_max + 1
         num_mat_mul_opt = typemax(Int)
-        for p in 2:p_max # Compute minimum in (3.11)
-            Aᵖ⁺¹ *= A
+        for (p, Ap_norm) in opnorm_pow_iter
             # (3.7)
-            d, d_old = t_norm * opnormest1(Aᵖ⁺¹)^(1 // (p + 1)), d
+            d, d_old = t_norm * Ap_norm, d
             α = max(d, d_old)
-            degree_min = p * (p - 1) - 1
+            degree_min = (p - 1) * (p - 2) - 1
             for degree in degree_min:degree_max
                 num_mat_mul = asint(degree * cld(α, θ[degree]))
                 if num_mat_mul < num_mat_mul_opt ||
@@ -79,8 +81,24 @@ function _parameters(t, A::Union{Bidiagonal, Tridiagonal}, ncols_B, degree_max, 
     return _parameters(t, sparse(A), ncols_B, degree_max, ℓ, tol)
 end
 
+function opnormest1_pow_series(A::AbstractMatrix, pow_max::Int, prototype; kwargs...)
+    Apows = Iterators.accumulate(*, Iterators.repeated(A, pow_max))
+    return Iterators.map(zip(1:pow_max, Apows)) do (p, Ap)
+        return (p, opnormest1(Ap)^(1 // p))
+    end
+end
+function opnormest1_pow_series(A, pow_max::Int, prototype; rng::Random.AbstractRNG = Random.default_rng())
+    method = HighamTisseurOpNorm1()
+    cache = allocate_memory(method, A, prototype)
+    return Iterators.map(1:pow_max) do p
+        Ap = PowerLinearOperator(A, p)
+        Ap_norm = opnorm_est(rng, method, Ap, cache)
+        return (p, Ap_norm^(1 // p))
+    end
+end
+
 # avoid differentiating through _parameters with ChainRules-compatible ADs
-ChainRulesCore.@non_differentiable _parameters(t, A, ncols_B, degree_max, ℓ, tol)
+ChainRulesCore.@non_differentiable _parameters(t, A, B, degree_max, ℓ, tol, rng)
 
 # solution p to p(p-1) ≤ m + 1
 p_from_degree_max(degree_max) = Int(fld(1 + sqrt(5 + 4 * degree_max), 2))
