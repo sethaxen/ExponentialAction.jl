@@ -24,7 +24,14 @@ function expv_taylor(t, A, B, degree_max; tol = default_tol(t, A, B))
         # check if ratio of norm of tail and norm of series is below tolerance
         norm_tail = _opnormInf(Z)
         norm_tail_tot = norm_tail_old + norm_tail
-        norm_tail_tot ≤ tol * _opnormInf(F) && break
+        # An exactly-zero primal norm makes the check degenerate (0 ≤ tol·0),
+        # which can arise with AD types whose primal is zero but whose partials
+        # are not (e.g. ForwardDiff Duals seeded at a zero state). Breaking
+        # there would silently truncate the dual part of the series, so treat
+        # a zero-primal series as not converged and keep iterating up to the
+        # chosen degree, which already bounds the tail by `tol`.
+        norm_F = _opnormInf(F)
+        !iszero(norm_tail_tot) && !iszero(norm_F) && norm_tail_tot ≤ tol * norm_F && break
         norm_tail_old = norm_tail
     end
     return F
