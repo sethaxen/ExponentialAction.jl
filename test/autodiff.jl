@@ -122,3 +122,27 @@ end
         end
     end
 end
+
+@testset "expv dual at zero-primal B (issue #59)" begin
+    # The Taylor convergence check strips duals; with an exactly-zero-primal
+    # B carrying nonzero partials, the primal check 0 ≤ tol·0 fired at j=1 and
+    # the returned duals carried only the first-order term.
+    t = 0.1
+    A = [0.0 -0.5; 0.5 0.0]
+    x = [1.0, 0.0]
+    expected = exp(t * A) * x
+
+    # Zero primal, seeded duals (e.g. a state trajectory initialized at zero)
+    B = [ForwardDiff.Dual{ForwardDiff.Tag{Nothing,Float64}}(0.0, 1.0),
+         ForwardDiff.Dual{ForwardDiff.Tag{Nothing,Float64}}(0.0, 0.0)]
+    y = expv(t, A, B)
+    @test ForwardDiff.value.(y) ≈ zeros(2) atol = 1.0e-12
+    @test [ForwardDiff.partials(yi)[1] for yi in y] ≈ expected atol = 1.0e-12
+
+    # value-preserving sanity: nonzero primal remains exact
+    B2 = [ForwardDiff.Dual{ForwardDiff.Tag{Nothing,Float64}}(1.0, 1.0),
+          ForwardDiff.Dual{ForwardDiff.Tag{Nothing,Float64}}(0.0, 0.0)]
+    y2 = expv(t, A, B2)
+    @test ForwardDiff.value.(y2) ≈ expected atol = 1.0e-12
+    @test [ForwardDiff.partials(yi)[1] for yi in y2] ≈ expected atol = 1.0e-12
+end
