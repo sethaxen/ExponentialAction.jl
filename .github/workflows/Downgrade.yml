@@ -23,7 +23,7 @@ jobs:
         with:
           version: ${{ matrix.version }}
       - uses: julia-actions/cache@v3
-      - uses: julia-actions/julia-downgrade-compat@v2.6.2
+      - uses: julia-actions/julia-downgrade-compat@v2.7.0
         with:
           mode: deps
       - uses: julia-actions/julia-buildpkg@v1
