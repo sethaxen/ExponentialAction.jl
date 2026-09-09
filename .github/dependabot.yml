@@ -9,6 +9,7 @@ updates:
     directories: # Location of Julia projects
       - "/"
       - "/docs"
+      - "/test"
     schedule:
       interval: "daily"
     groups:
