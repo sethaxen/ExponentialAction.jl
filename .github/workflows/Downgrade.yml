@@ -11,11 +11,11 @@ on:
 
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ github.event_name }}
+    name: Downgrade / Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ github.event_name }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        version: ['lts']
+        version: ['1']
         os: ['ubuntu-latest']
     steps:
       - uses: actions/checkout@v7
@@ -26,7 +26,10 @@ jobs:
       - uses: julia-actions/julia-downgrade-compat@v2.7.0
         with:
           mode: deps
+          projects: ".,test"
       - uses: julia-actions/julia-buildpkg@v1
+        with:
+          project: "test"
       - uses: julia-actions/julia-runtest@v1
         with:
           allow_reresolve: false
